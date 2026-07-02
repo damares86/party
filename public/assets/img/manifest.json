@@ -1,0 +1,31 @@
+{
+  "name": "Party Insieme",
+  "short_name": "Party Insieme",
+  "start_url": "https://www.dmweblab.com",
+  "display": "standalone",
+  "background_color": "#fff",
+  "theme_color": "#fff",
+  "categories": ["mobile", "multipurpose", "blog", "ecommerce", "pwa"],
+  "orientation": "portrait",
+  "description": "Party Insieme",
+  "icons": [
+    {
+      "src": "assets/img/favicon/favicon-96x96.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/img/favicon/web-app-manifest-192x192",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/img/favicon/web-app-manifest-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
