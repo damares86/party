@@ -23,6 +23,17 @@ abstract class CrudRepository
         return $stmt->fetchAll();
     }
 
+    public function findLast(): ?array
+    {
+        $stmt = $this->db->query(
+            "SELECT * FROM `{$this->table}` ORDER BY `id` DESC LIMIT 1"
+        );
+
+        $row = $stmt->fetch();
+
+        return $row ?: null;
+    }
+
     public function findById(int|string $id): ?array
     {
         $stmt = $this->db->prepare(

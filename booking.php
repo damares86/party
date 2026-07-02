@@ -14,14 +14,14 @@ $list = $products->findAll();
 <body class="text-center">
 
     <main class="form-signin">
-        <form>
+        <form action="core/mngBooking.php" method="POST">
             <img class="mb-2" src="assets/img/logo_agnelli.png" alt="" width="72" height="47">
             <h1 class="mb-3">Partynsieme</h1>
             <h5>Prenotazione</h5>
             <div class="col-12 my-2">
                 <div class="col-12 mb-4">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="mail@mail.it" required>
+                    <input type="email" class="form-control" name="email" placeholder="mail@mail.it" required>
                     <div class="invalid-feedback">
                         Inserire una email valida
                     </div>
@@ -55,6 +55,7 @@ $list = $products->findAll();
                                 value="1"
                                 required>
                         </div>
+                        
                         <div class="col-1 pt-4">
                             <button type="button" class="btn btn-danger btn-sm remove-row d-none">
                                 X
@@ -64,7 +65,7 @@ $list = $products->findAll();
 
                 </div>
             </div>
-
+            <input type="hidden" name="operation" value="add">
             <button class="w-50 btn btn-lg btn-success mb-4" type="button" id="more">+ Aggiungi</button>
 
             <button class="w-100 btn btn-lg btn-primary" type="submit">Invia</button>

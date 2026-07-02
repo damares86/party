@@ -8,5 +8,5 @@ final class ProductRepository extends CrudRepository
 {
     protected string $table = 'products';
 
-   
+
 }
