@@ -6,7 +6,7 @@ return [
     'host' => 'localhost',
     'port' => 3306,
     'database' => 'party',
-    'username' => 'root',
+    'username' => 'admin',
     'password' => 'admin',
     'charset' => 'utf8mb4',
 ];

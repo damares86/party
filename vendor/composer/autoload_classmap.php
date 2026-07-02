@@ -7,4 +7,11 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'SqlFormatter' => $vendorDir . '/jdorn/sql-formatter/lib/SqlFormatter.php',
+    'bdk\\Backtrace' => $vendorDir . '/bdk/debug/src/Backtrace/Backtrace.php',
+    'bdk\\Container' => $vendorDir . '/bdk/debug/src/Container/Container.php',
+    'bdk\\Debug' => $vendorDir . '/bdk/debug/src/Debug/Debug.php',
+    'bdk\\Debug\\Utility' => $vendorDir . '/bdk/debug/src/Debug/Utility/Utility.php',
+    'bdk\\ErrorHandler' => $vendorDir . '/bdk/debug/src/ErrorHandler/ErrorHandler.php',
+    'bdk\\Promise' => $vendorDir . '/bdk/debug/src/Promise/Promise.php',
 );

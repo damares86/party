@@ -6,5 +6,17 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'bdk\\Teams\\' => array($vendorDir . '/bdk/debug/src/Teams'),
+    'bdk\\Slack\\' => array($vendorDir . '/bdk/debug/src/Slack'),
+    'bdk\\PubSub\\' => array($vendorDir . '/bdk/debug/src/PubSub'),
+    'bdk\\Promise\\' => array($vendorDir . '/bdk/debug/src/Promise'),
+    'bdk\\HttpMessage\\' => array($vendorDir . '/bdk/http-message/src/HttpMessage'),
+    'bdk\\HttpFactory\\' => array($vendorDir . '/bdk/http-message/src/HttpFactory'),
+    'bdk\\ErrorHandler\\' => array($vendorDir . '/bdk/debug/src/ErrorHandler'),
+    'bdk\\Debug\\' => array($vendorDir . '/bdk/debug/src/Debug'),
+    'bdk\\CurlHttpMessage\\' => array($vendorDir . '/bdk/debug/src/CurlHttpMessage'),
+    'bdk\\Container\\' => array($vendorDir . '/bdk/debug/src/Container'),
+    'bdk\\Backtrace\\' => array($vendorDir . '/bdk/debug/src/Backtrace'),
+    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
     'App\\' => array($baseDir . '/src'),
 );
