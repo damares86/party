@@ -1,7 +1,16 @@
 <?php
+
+declare(strict_types=1);
+
 require 'inc/header.php';
 
+use App\ProductRepository;
+
+$products = new ProductRepository();
+$list = $products->findAll();
+
 ?>
+
 <body class="text-center">
 
     <main class="form-signin">
@@ -11,9 +20,17 @@ require 'inc/header.php';
             <h5>Cassa</h5>
             <div class="col-12 my-5">
                 <label for="country" class="form-label">Tipo di cibo</label>
-                <select class="form-select mb-3" id="country" required>
+                <select class="form-select" name="items[0][product_id]" required>
                     <option value="">---</option>
-                    <option>United States</option>
+                    <?php
+                    foreach ($list as $item) {
+
+                    ?>
+                        <option value="<?= $item['id'] ?>"><?= $item['name'] ?> (<?= $item['code'] ?>)</option>
+
+                    <?php
+                    }
+                    ?>
                 </select>
                 <div class="row">
                     <div class="col-8">
@@ -24,7 +41,14 @@ require 'inc/header.php';
                         <label for="address" class="form-label">Lettera</label>
                         <select class="form-select mb-3" id="country" required>
                             <option value="">---</option>
-                            <option>United States</option>
+                            <?php
+                            $alfabeto = range('A', 'Z');
+                            foreach ($alfabeto as $letter) {
+                            ?>
+                                <option value="<?= $letter ?>"><?= $letter ?></option>
+                            <?php
+                            }
+                            ?>
                         </select>
                     </div>
                 </div>
@@ -34,7 +58,7 @@ require 'inc/header.php';
             <?php
             require 'inc/footer.php';
             ?>
-           
+
         </form>
     </main>
 
