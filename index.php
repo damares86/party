@@ -18,6 +18,7 @@ $list = $products->findAll();
             <img class="mb-4" src="assets/img/logo_agnelli.png" alt="" width="72" height="57">
             <h1 class="mb-5 ">Partynsieme</h1>
             <h5>Cassa</h5>
+            <p><a href="booking.php">Booking --></a></p>
             <div class="col-12 my-5">
                 <label for="country" class="form-label">Tipo di cibo</label>
                 <select class="form-select" name="items[0][product_id]" required>

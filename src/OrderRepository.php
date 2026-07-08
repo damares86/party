@@ -6,7 +6,7 @@ namespace App;
 
 final class OrderRepository extends CrudRepository
 {
-    protected string $table = 'orders';
+    public string $table = 'orders';
 
 
 }
