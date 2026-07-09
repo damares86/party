@@ -127,7 +127,40 @@ if ($operation == "add") {
 } else if ($operation == "edit") {
     // modifica delle prenotazioni
 } else if ($operation == "book") {
-    // gestione delle prenotazioni con used 0/1
+
+    $order_number = filter_input(INPUT_POST, 'number');
+    $order_to_check = $orders->findBy(['order_number' => $order_number]);
+
+    if ($order_to_check[0]['paid'] == 0) {
+        header("Location: ../index.php?err=noPaid");
+        exit;
+    }
+
+    $orders_id = $order_to_check[0]['id'];
+    $products_id = filter_input(INPUT_POST, 'product_id');
+    $product_letter = filter_input(INPUT_POST, 'letter');
+
+    $orders->table = 'orders_details';
+
+    $order_check = $orders->findBy([
+        'orders_id' => $orders_id,
+        'products_id' => $products_id,
+        'product_letter' => $product_letter
+    ]);
+
+    if ($order_check[0]['used'] == 1) {
+        header("Location: ../index.php?err=used");
+        exit;
+    }
+    $id = $order_check[0]['id'] ;
+    if($orders->update($id,['used' => 1])){
+        header("Location: ../index.php?msg=bookSucc");
+        exit;
+    }else{
+        header("Location: ../index.php?err=bookErr");
+        exit;
+    }
+
 } else if ($operation == "payment") {
     // gestione dei pagamenti con paid 0/1
 }

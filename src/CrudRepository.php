@@ -49,6 +49,26 @@ abstract class CrudRepository
         return $row ?: null;
     }
 
+    public function findBy(array $conditions): array
+    {
+        $where = [];
+
+        foreach ($conditions as $column => $value) {
+            $where[] = "`{$column}` = :{$column}";
+        }
+
+        $sql = sprintf(
+            "SELECT * FROM `%s` WHERE %s",
+            $this->table,
+            implode(' AND ', $where)
+        );
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($conditions);
+
+        return $stmt->fetchAll();
+    }
+
     public function insert(array $data): int
     {
         $columns = implode(',', array_keys($data));
