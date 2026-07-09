@@ -91,28 +91,29 @@ if ($operation == "add") {
             <head>
                 <meta charset="utf-8">
             </head>
-        <body style="font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;padding:30px;">
+            <body style="font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;padding:30px;">
 
-            <div style="max-width:700px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
-            <h2 style="text-align:center">Partynsieme - Agnelli</h2>
-            <h3 style="background-color:#ff0000;color:#fff;">ATTENZIONE: la prenotazione non sarà valida fino a quando non verrà saldato l\'importo. <u>Non sarà possibile pagare la sera stessa</u>, l\'importo dovrà essere saldato nei giorni precedenti.
-            </h3>
-            
-            <h2 style="margin-top:0;">
-            Dati prenotazione <u>' . $new_order_number . '</u>
-            </h2>
-            <ul>';
+                <div style="max-width:700px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
+                    <h2 style="text-align:center">Partynsieme - Agnelli</h2>
+                    <h3 style="background-color:#ff0000;color:#fff;">ATTENZIONE: la prenotazione non sarà valida fino a quando non verrà saldato l\'importo. <u>Non sarà possibile pagare la sera stessa</u>, l\'importo dovrà essere saldato nei giorni precedenti.<br>
+                    Per pagare sarà necessario comunicare la <strong>mail usata per la prenotazione e il numero d\'ordine</strong>.
+                    </h3>
+                    
+                    <h2 style="margin-top:0;">
+                    Dati prenotazione <u>' . $new_order_number . '</u>
+                    </h2>
+                    <ul>';
     foreach ($order_products as $list_item) {
-        $output .= '<li style="margin:1em auto;">' . $list_item['qty'] . 'x ' . $list_item['product_name'] . ' -> cod. <strong>' . $list_item['product_code'] . '-' . $new_order_number . $list_item['product_letter'] . '</strong> - ' . $list_item['product_price'] . '€</li>';
+        $output .= '    <li style="margin:1em auto;">' . $list_item['qty'] . 'x ' . $list_item['product_name'] . ' -> cod. <strong>' . $list_item['product_code'] . '-' . $new_order_number . $list_item['product_letter'] . '</strong> - ' . $list_item['product_price'] . '€</li>';
     }
 
-    $output .= '</ul>
-        <hr>
-        <p>Prezzo totale da pagare: <strong>' . $total_price . '€</strong></p>
-        <hr>
-        <p>In caso di errori presenti nell\'ordine, contattare <a href="mailto:economo@agnelli.it">economo@agnelli.it</a></p>
-        </div>
-        </body>
+    $output .= '    </ul>
+                    <hr>
+                    <p>Prezzo totale da pagare: <strong>' . $total_price . '€</strong></p>
+                    <hr>
+                    <p>In caso di errori presenti nell\'ordine, contattare <a href="mailto:economo@agnelli.it">economo@agnelli.it</a></p>
+                </div>
+            </body>
         </html>
         ';
 
@@ -126,6 +127,9 @@ if ($operation == "add") {
 
 } else if ($operation == "edit") {
     // modifica delle prenotazioni
+
+
+
 } else if ($operation == "book") {
 
     $order_number = filter_input(INPUT_POST, 'number');
@@ -161,8 +165,25 @@ if ($operation == "add") {
         exit;
     }
 
+} else if ($operation == "search") {
+    // ricerca prenotazione da pagare
+    
+    $email = filter_input(INPUT_POST,'email');
+    $order_number = filter_input(INPUT_POST,'number');
+    $order_check = $orders->findBy([
+        'order_number' => $order_number,
+        'email' => $email
+    ]);
+
+    print_r($order_check[0]);
+
+    exit;
+
 } else if ($operation == "payment") {
     // gestione dei pagamenti con paid 0/1
+
+
+
 }
 
 

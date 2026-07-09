@@ -19,6 +19,7 @@ $list = $products->findAll();
             <h1 class="mb-5 ">Partynsieme</h1>
             <h5>Cassa</h5>
             <p><a href="booking.php">Booking --></a></p>
+            <p><a href="payment.php">Pagamento --></a></p>
             <div class="col-12 my-5">
                 <label for="type" class="form-label">Tipo di cibo</label>
                 <select class="form-select" name="product_id" required>

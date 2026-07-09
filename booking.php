@@ -19,6 +19,7 @@ $list = $products->findAll();
             <h1 class="mb-3">Partynsieme</h1>
             <h5>Prenotazione</h5>
             <p><a href="index.php"><-- Cassa</a></p>
+            <p><a href="payment.php">Pagamento --></a></p>
             <div class="col-12 my-2">
                 <div class="col-12 mb-4">
                     <label for="email" class="form-label">Email</label>
