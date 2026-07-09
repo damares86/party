@@ -25,20 +25,14 @@ if ($operation == "add") {
     $email = filter_input(INPUT_POST, 'email');
 
     // range for the random letter
-    $letters = range('A', 'Z');
 
     $last = $orders->findLast();
-    $new_code_number = $last['order_code'] + 1;
-    // random letter for the code
-    $letter = $letters[random_int(0, count($letters) - 1)];
-
-    $order_code = $new_code_number . $letter;
+    $new_order_number = $last['order_number'] + 1;
 
     // inserire ordine nella tabella 'orders'
     $new_order = $orders->insert([
         'email' => $email,
-        'order_code' => $new_code_number,
-        'letter_code' => $letter
+        'order_number' => $new_order_number
     ]);
 
     // get the inserted order id
@@ -48,16 +42,19 @@ if ($operation == "add") {
     // create an array with all the products, for the email
     $order_products = [];
     $total_price = 0;
+    $letters = range('A', 'Z');
 
     // cycle the products
     foreach ($_POST['items'] as $item) {
 
 
+        $letter = $letters[random_int(0, count($letters) - 1)];
         $orders->table = 'orders_details';
 
         $new_order_detail = $orders->insert([
             'orders_id' => $order_inserted_id,
             'products_id' => $item['product_id'],
+            'product_letter' => $letter,
             'qty' => $item['qty']
         ]);
 
@@ -70,6 +67,7 @@ if ($operation == "add") {
             'product_name' => $product_name,
             'product_code' => $product_code,
             'product_price' => $product_price,
+            'product_letter' => $letter,
             'qty' => $item['qty']
         );
 
@@ -80,7 +78,7 @@ if ($operation == "add") {
     // email send with the order data
     $from = 'noreply3@istitutoagnelli.it';
 
-    $subject = "Riepilogo prenotazione $new_code_number.$letter per Partyinsieme";
+    $subject = "Riepilogo prenotazione $new_order_number per Partyinsieme";
 
     $headers  = "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
@@ -101,16 +99,18 @@ if ($operation == "add") {
             </h3>
             
             <h2 style="margin-top:0;">
-            Dati prenotazione <u>' . $new_code_number . $letter . '</u>
+            Dati prenotazione <u>' . $new_order_number . '</u>
             </h2>
             <ul>';
     foreach ($order_products as $list_item) {
-        $output .= '<li>' . $list_item['qty'] . 'x ' . $list_item['product_name'] . ' -> cod. <strong>' . $list_item['product_code'] . '-' . $order_code . '</strong> - ' . $list_item['product_price'] . '€</li>';
+        $output .= '<li style="margin:1em auto;">' . $list_item['qty'] . 'x ' . $list_item['product_name'] . ' -> cod. <strong>' . $list_item['product_code'] . '-' . $new_order_number . $list_item['product_letter'] . '</strong> - ' . $list_item['product_price'] . '€</li>';
     }
 
     $output .= '</ul>
         <hr>
         <p>Prezzo totale da pagare: <strong>' . $total_price . '€</strong></p>
+        <hr>
+        <p>In caso di errori presenti nell\'ordine, contattare <a href="mailto:economo@agnelli.it">economo@agnelli.it</a></p>
         </div>
         </body>
         </html>
@@ -128,6 +128,8 @@ if ($operation == "add") {
     // modifica delle prenotazioni
 } else if ($operation == "book") {
     // gestione delle prenotazioni con used 0/1
+} else if ($operation == "payment") {
+    // gestione dei pagamenti con paid 0/1
 }
 
 

@@ -27,7 +27,7 @@ $list = $products->findAll();
                     foreach ($list as $item) {
 
                     ?>
-                        <option value="<?= $item['id'] ?>"><?= $item['name'] ?> (<?= $item['code'] ?>)</option>
+                        <option value="<?= $item['id'] ?>"><?= $item['code'] ?> (<?= $item['name'] ?>)</option>
 
                     <?php
                     }
