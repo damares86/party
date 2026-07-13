@@ -49,4 +49,5 @@ $debug = new \bdk\Debug(array(
 
     <!-- Custom styles for this template -->
     <link href="assets/css/signin.css" rel="stylesheet">
+    <link href="assets/css/custom.css" rel="stylesheet">
 </head>

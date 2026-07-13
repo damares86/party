@@ -11,7 +11,7 @@ $products = new ProductRepository();
 $orders = new OrderRepository();
 $list = $products->findAll();
 
-$_GET['email'] ? $email = filter_input(INPUT_GET, 'email') : $email = '';
+$email = $_GET['email'] ? filter_input(INPUT_GET, 'email') : '';
 $order_number = $_GET['order_number'] ? filter_input(INPUT_GET, 'order_number') : '';
 $msg = filter_input(INPUT_GET, 'msg');
 

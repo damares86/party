@@ -77,6 +77,8 @@ if ($operation == "add") {
     $orders->table = 'orders';
     $orders->update($order_inserted_id, ['bill' => $total_price]);
 
+    $error = 0;
+
     // email send with the order data
     $from = 'noreply3@istitutoagnelli.it';
 
@@ -119,14 +121,17 @@ if ($operation == "add") {
         </html>
         ';
 
-    print_r($output);
-    exit;
+    if (!mail($from, $subject, $output, $headers)) {
+        $error++;
+    }
 
-    //////////////////////////////////////////
-    // invio email
-    //////////////////////////////////////////
-
-
+    if ($error > 0) {
+        header("Location: ../booking.php?err=errSendMail");
+        exit;
+    } else {
+        header("Location: ../booking.php?msg=mailSend");
+        exit;
+    }
 } else if ($operation == "edit") {
     // modifica delle prenotazioni
 
@@ -193,23 +198,80 @@ if ($operation == "add") {
     $id = filter_input(INPUT_POST, 'id');
 
     if ($orders->update($id, ['paid' => 1])) {
-        header("Location: ../payment.php?msg=paidSucc");
-        exit;
+
+        ////////////////////////////////////////////////
+        ///    RECUPERO INFORMAZIONI ORDINE
+        ////////////////////////////////////////////////
+
+        $order_paid = $orders->findById($id);
+        $order_number = $order_paid['order_number'];
+        
+        $orders->table = 'orders_details';
+        $order_products = $orders->findBy(['orders_id' => $id]);
+
+
+        ////////////////////////////////////////////////
+        ///    INVIO MAIL DI CONFERMA PAGAMENTO
+        ////////////////////////////////////////////////
+
+        $error = 0;
+
+        // email send with the order data
+        $from = 'noreply3@istitutoagnelli.it';
+
+        $subject = "Conferma pagamento prenotazione $order_number per Partyinsieme";
+
+        $headers  = "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        $headers .= "From: {$from}\r\n";
+        $headers .= "Reply-To: {$from}\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion();
+
+        $output = '
+        <html>
+            <head>
+                <meta charset="utf-8">
+            </head>
+            <body style="font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;padding:30px;">
+
+                <div style="max-width:700px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
+                    <h2 style="text-align:center">Partynsieme - Agnelli</h2>
+                    <h3 style="background-color:#00ff00;color:#000; padding:0.5em;">Prenotazione pagata</h3>
+                    
+                    <h2 style="margin-top:0;">
+                    Dati prenotazione <u>' . $order_number . '</u>
+                    </h2>
+                    <ul>';
+        foreach ($order_products as $list_item) {
+            
+            $product_data = $products->findById($list_item['products_id']);
+
+            $output .= '    <li style="margin:1em auto;">' . $list_item['qty'] . 'x ' . $product_data['name'] . ' -> cod. <strong>' . $product_data['code'] . '-' . $order_number . $list_item['product_letter'] . '</strong></li>';
+        }
+
+        $output .= '    </ul>
+                    <hr>
+                    <p>In caso di errori presenti nell\'ordine, contattare <a href="mailto:economo@agnelli.it">economo@agnelli.it</a></p>
+                </div>
+            </body>
+        </html>
+        ';
+
+        if (!mail($from, $subject, $output, $headers)) {
+            $error++;
+        }
+
+        if ($error > 0) {
+            header("Location: ../payment.php?err=errPaySendMail");
+            exit;
+        } else {
+            header("Location: ../payment.php?msg=paidSucc");
+            exit;
+        }
     } else {
         header("Location: ../payment.php?err=paidErr");
         exit;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 exit;
