@@ -5,9 +5,24 @@ declare(strict_types=1);
 require 'inc/header.php';
 
 use App\ProductRepository;
+use App\OrderRepository;
 
 $products = new ProductRepository();
+$orders = new OrderRepository();
 $list = $products->findAll();
+
+$_GET['email'] ? $email = filter_input(INPUT_GET, 'email') : $email = '';
+$order_number = $_GET['order_number'] ? filter_input(INPUT_GET, 'order_number') : '';
+$msg = filter_input(INPUT_GET, 'msg');
+
+$button = $msg == 'orderToPay' ? 'Paga' : 'Cerca';
+$operation = $msg == 'orderToPay' ? 'pay' : 'search';
+$bill = '';
+if (filter_input(INPUT_GET, 'id')) {
+    $id = filter_input(INPUT_GET, 'id');
+    $order = $orders->findById($id);
+    $bill = $order['bill'];
+}
 
 ?>
 
@@ -22,9 +37,21 @@ $list = $products->findAll();
             <p><a href="index.php">Cassa --></a></p>
             <div class="col-12 my-5">
 
+                <?php
+                if ($msg == 'paidSucc') {
+                ?>
+                    <div class="my-3 p-3 bg-success text-white">
+                        <b>Ordine pagato</b>
+                    </div>
+                    <div class="my-3">
+                        <b>Cerca un altro ordine</b>
+                    </div>
+                <?php
+                }
+                ?>
                 <div class="col-12 mb-4">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" placeholder="mail@mail.it" required>
+                    <input type="email" class="form-control" name="email" placeholder="mail@mail.it" required value="<?= $email ?>">
                     <div class="invalid-feedback">
                         Inserire una email valida
                     </div>
@@ -32,12 +59,31 @@ $list = $products->findAll();
 
                 <div class="col-12 mb-4">
                     <label for="code" class="form-label">Numero ordine</label>
-                    <input type="number" class="form-control" name="number" placeholder="00000" required>
+                    <input type="number" class="form-control" name="number" placeholder="00000" required value="<?= $order_number ?>">
                 </div>
 
-                <input type="hidden" name="operation" value="search">
+                <?php
+                if ($msg == 'orderToPay') {
+                ?>
+                    <div class="col-12 mb-4">
+                        <label for="code" class="form-label">Totale da pagare</label>
+                        <br><b><?= $bill ?> €</b>
+                    </div>
 
-                <button class="w-100 btn btn-lg btn-primary" type="submit">Cerca</button>
+                    <input type="hidden" name="id" value="<?= $id ?>">
+                <?php
+                } else if ($msg == 'orderPaid') {
+                ?>
+                    <div class="my-3 p-3 bg-success text-white">
+                        <b>Ordine pagato</b>
+                    </div>
+                <?php
+                }
+                ?>
+
+                <input type="hidden" name="operation" value="<?= $operation ?>">
+
+                <button class="w-100 btn btn-lg btn-primary" type="submit"><?= $button ?></button>
                 <?php
                 require 'inc/footer.php';
                 ?>

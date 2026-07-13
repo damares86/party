@@ -74,6 +74,8 @@ if ($operation == "add") {
         $total_price += $product_price;
     }
 
+    $orders->table = 'orders';
+    $orders->update($order_inserted_id, ['bill' => $total_price]);
 
     // email send with the order data
     $from = 'noreply3@istitutoagnelli.it';
@@ -156,34 +158,47 @@ if ($operation == "add") {
         header("Location: ../index.php?err=used");
         exit;
     }
-    $id = $order_check[0]['id'] ;
-    if($orders->update($id,['used' => 1])){
+    $id = $order_check[0]['id'];
+    if ($orders->update($id, ['used' => 1])) {
         header("Location: ../index.php?msg=bookSucc");
         exit;
-    }else{
+    } else {
         header("Location: ../index.php?err=bookErr");
         exit;
     }
-
 } else if ($operation == "search") {
     // ricerca prenotazione da pagare
-    
-    $email = filter_input(INPUT_POST,'email');
-    $order_number = filter_input(INPUT_POST,'number');
+
+    $email = filter_input(INPUT_POST, 'email');
+    $order_number = filter_input(INPUT_POST, 'number');
     $order_check = $orders->findBy([
         'order_number' => $order_number,
         'email' => $email
     ]);
 
-    print_r($order_check[0]);
+    $msg = '';
 
+    if (count($order_check) == 0) {
+        $msg = 'msg=noOrder';
+    } else if ($order_check[0]['paid'] == 0) {
+        $msg = 'msg=orderToPay&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
+    } else if ($order_check[0]['paid'] == 1) {
+        $msg = 'msg=orderPaid&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
+    }
+
+    header("Location: ../payment.php?$msg");
     exit;
-
-} else if ($operation == "payment") {
+} else if ($operation == "pay") {
     // gestione dei pagamenti con paid 0/1
+    $id = filter_input(INPUT_POST, 'id');
 
-
-
+    if ($orders->update($id, ['paid' => 1])) {
+        header("Location: ../payment.php?msg=paidSucc");
+        exit;
+    } else {
+        header("Location: ../payment.php?err=paidErr");
+        exit;
+    }
 }
 
 
