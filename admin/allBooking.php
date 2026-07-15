@@ -22,6 +22,9 @@ $list = $orders->findAll();
         <div>
             <div class="container px-4 py-5" id="featured-3">
                 <h2 class="pb-2 border-bottom">Prenotazioni</h2>
+
+                <a href="../booking.php" class="btn btn-success my-3">+ Aggiungi prenotazione</a>
+
                 <div class="mb-5">
                     <label>Pagato</label>
                     <select id="filterPagato" class="form-select w-auto">

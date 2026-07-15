@@ -1,3 +1,11 @@
-.btn.invia{
+.btn.invia, .feature-icon{
     background-color: #ac1819;
+}
+
+a{
+    color: #ac1819;
+}
+
+a:hover{
+    color: #950f0f;
 }

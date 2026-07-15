@@ -17,7 +17,7 @@ require 'inc/header.php';
                 <h2 class="pb-2 border-bottom">Dashboard</h2>
                 <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
                     <div class="feature col">
-                        <div class="feature-icon bg-primary bg-gradient">
+                        <div class="feature-icon bg-gradient">
                             <i class="fa fa-calendar-check"></i>
                         </div>
                         <a href="allBooking.php" class="icon-link">
@@ -25,7 +25,7 @@ require 'inc/header.php';
                         </a>
                     </div>
                     <div class="feature col">
-                        <div class="feature-icon bg-primary bg-gradient">
+                        <div class="feature-icon bg-gradient">
                             <i class="fa fa-user"></i>
                         </div>
                         <a href="allAccounts.php" class="icon-link">
@@ -33,7 +33,7 @@ require 'inc/header.php';
                         </a>
                     </div>
                     <div class="feature col">
-                        <div class="feature-icon bg-primary bg-gradient">
+                        <div class="feature-icon bg-gradient">
                             <i class="fa fa-cutlery"></i>
                         </div>
                         <a href="allFood.php" class="icon-link">
