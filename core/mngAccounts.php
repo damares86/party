@@ -14,8 +14,18 @@ $debug = new \bdk\Debug(array(
 
 $accounts = new AccountsRepository();
 
-$operation = filter_input(INPUT_POST, 'operation');
+if(filter_input(INPUT_GET,'idToDel')){
+    $id = filter_input(INPUT_GET,'idToDel');
+    if($accounts->delete($id)){
+        header("Location: ../admin/allAccounts.php?msg=accountDelete");
+        exit;
+    }else{
+        header("Location: ../admin/allAccounts.php?err=accountNoDelete");
+        exit;
+    }
+}
 
+$operation = filter_input(INPUT_POST, 'operation');
 
 if ($operation == 'login') {
     $username = filter_input(INPUT_POST, 'username');

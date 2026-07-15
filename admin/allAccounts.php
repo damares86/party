@@ -5,10 +5,10 @@ require 'inc/header.php';
 
 require_once '../vendor/autoload.php';
 
-use App\OrderRepository;
+use App\AccountsRepository;
+$accounts = new AccountsRepository();
 
-$orders = new OrderRepository();
-$list = $orders->findAll();
+$list = $accounts->findAll();
 ?>
 
 <body>
@@ -21,23 +21,12 @@ $list = $orders->findAll();
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
-                <h2 class="pb-2 border-bottom">Prenotazioni</h2>
-                <div class="mb-5">
-                    <label>Pagato</label>
-                    <select id="filterPagato" class="form-select w-auto">
-                        <option value="">Tutti</option>
-                        <option value="Sì">Sì</option>
-                        <option value="No">No</option>
-                    </select>
-                </div>
+                <h2 class="pb-2 border-bottom">Utenti</h2>
                 <table id="table" class="table table-striped">
                     <thead>
                         <tr>
-                            <th style="width:10%">Numero prenotazione</th>
-                            <th style="width:30%">Email</th>
-                            <th style="width:10%">Totale</th>
-                            <th style="width:10%">Pagato</th>
-                            <th style="width:20%">Azioni</th>
+                            <th style="width:60%">Username</th>
+                            <th style="width:40%">Azioni</th>
                         </tr>
                     </thead>
 
@@ -46,15 +35,7 @@ $list = $orders->findAll();
                         foreach ($list as $item) {
                         ?>
                             <tr>
-                                <td><?= $item['order_number'] ?></td>
-                                <td><?= $item['email'] ?></td>
-                                <td><?= $item['bill'] ?> €</td>
-                                <td>
-                                    <?php
-                                    $paid = $item['paid'] == 0 ? 'No' : 'Sì';
-                                    echo $paid;
-                                    ?>
-                                </td>
+                                <td><?= $item['username'] ?></td>
                                 <td>
                                     <a href="editBooking.php?id=<?= $item['id'] ?>" class="btn btn-warning">Modifica</a>
                                     <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#danger<?= $item['id'] ?>">Elimina
@@ -79,7 +60,7 @@ $list = $orders->findAll();
                                                         <i class="bx bx-x d-block d-sm-none"></i>
                                                         <span class="d-none d-sm-block">Indietro</span>
                                                     </button>
-                                                    <span class="d-none d-sm-block"><a href="../core/mngBooking.php?idToDel=<?= $item['id'] ?>" class="btn btn-danger ml-1">
+                                                    <span class="d-none d-sm-block"><a href="../core/mngAccounts.php?idToDel=<?= $item['id'] ?>" class="btn btn-danger ml-1">
                                                             Conferma
                                                         </a></span>
                                                 </div>
