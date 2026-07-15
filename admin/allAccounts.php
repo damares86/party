@@ -22,6 +22,9 @@ $list = $accounts->findAll();
         <div>
             <div class="container px-4 py-5" id="featured-3">
                 <h2 class="pb-2 border-bottom">Utenti</h2>
+
+                <a href="../register.php" class="btn btn-success my-3">+ Aggiungi utente</a>
+
                 <table id="table" class="table table-striped">
                     <thead>
                         <tr>

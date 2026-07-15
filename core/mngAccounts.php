@@ -14,12 +14,12 @@ $debug = new \bdk\Debug(array(
 
 $accounts = new AccountsRepository();
 
-if(filter_input(INPUT_GET,'idToDel')){
-    $id = filter_input(INPUT_GET,'idToDel');
-    if($accounts->delete($id)){
+if (filter_input(INPUT_GET, 'idToDel')) {
+    $id = filter_input(INPUT_GET, 'idToDel');
+    if ($accounts->delete($id)) {
         header("Location: ../admin/allAccounts.php?msg=accountDelete");
         exit;
-    }else{
+    } else {
         header("Location: ../admin/allAccounts.php?err=accountNoDelete");
         exit;
     }
@@ -34,8 +34,8 @@ if ($operation == 'login') {
 
     if (count($account) > 0 && password_verify($postpass, $account[0]['password'])) {
         session_start();
-        $_SESSION['loggedin'] = true ;
-        $_SESSION['username'] = $username ;
+        $_SESSION['loggedin'] = true;
+        $_SESSION['username'] = $username;
 
         header("Location: ../index.php?msg=loginOk");
         exit;
@@ -60,4 +60,31 @@ if ($operation == 'login') {
         exit;
     }
 } else if ($operation == 'edit') {
+    $id = filter_input(INPUT_POST, 'idToMod');
+    $username = filter_input(INPUT_POST, 'username');
+    if (filter_input(INPUT_POST, "password")) {
+        $postpass = filter_input(INPUT_POST, "password");
+        $password = password_hash($postpass, PASSWORD_BCRYPT);
+        if ($accounts->update($id,[
+            'username' => $username,
+            'password' => $password
+        ])) {
+            header("Location: ../admin/allAccounts.php?msg=accountEdit");
+            exit;
+        } else {
+            header("Location: ../admin/allAccounts.php?err=accountNoEdit");
+            exit;
+        }
+    }else{
+        if ($accounts->update($id,[
+            'username' => $username
+        ])) {
+            header("Location: ../admin/allAccounts.php?msg=accountEdit");
+            exit;
+        } else {
+            header("Location: ../admin/allAccounts.php?err=accountNoEdit");
+            exit;
+        }
+    }
+
 }
