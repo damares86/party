@@ -5,10 +5,10 @@ require 'inc/header.php';
 
 require_once '../vendor/autoload.php';
 
-use App\AccountsRepository;
-$accounts = new AccountsRepository();
+use App\ProductRepository;
+$products = new ProductRepository();
 
-$list = $accounts->findAll();
+$list = $products->findAll();
 ?>
 
 <body>
@@ -21,11 +21,16 @@ $list = $accounts->findAll();
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
-                <h2 class="pb-2 border-bottom">Utenti</h2>
+                <h2 class="pb-2 border-bottom">Tipi di cibo</h2>
+
+                <a href="addFood.php" class="btn btn-success my-3">+ Aggiungi cibo</a>
+
                 <table id="table" class="table table-striped">
                     <thead>
                         <tr>
-                            <th style="width:60%">Username</th>
+                            <th style="width:30%">Tipo di cibo</th>
+                            <th style="width:20%">Codice</th>
+                            <th style="width:20%">Prezzo</th>
                             <th style="width:40%">Azioni</th>
                         </tr>
                     </thead>
@@ -35,9 +40,11 @@ $list = $accounts->findAll();
                         foreach ($list as $item) {
                         ?>
                             <tr>
-                                <td><?= $item['username'] ?></td>
+                                <td><?= $item['name'] ?></td>
+                                <td><?= $item['code'] ?></td>
+                                <td><?= $item['price'] ?> €</td>
                                 <td>
-                                    <a href="editAccount.php?id=<?= $item['id'] ?>" class="btn btn-warning">Modifica</a>
+                                    <a href="editFood.php?id=<?= $item['id'] ?>" class="btn btn-warning">Modifica</a>
                                     <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#danger<?= $item['id'] ?>">Elimina
                                     </a>
                                     <!--Danger theme Modal -->
@@ -53,14 +60,14 @@ $list = $accounts->findAll();
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    Se clicchi su 'Conferma' questo utenet verrà cancellato definitivamente.
+                                                    Se clicchi su 'Conferma' questo cibo verrà cancellato definitivamente.
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                                                         <i class="bx bx-x d-block d-sm-none"></i>
                                                         <span class="d-none d-sm-block">Indietro</span>
                                                     </button>
-                                                    <span class="d-none d-sm-block"><a href="../core/mngAccounts.php?idToDel=<?= $item['id'] ?>" class="btn btn-danger ml-1">
+                                                    <span class="d-none d-sm-block"><a href="../core/mngProducts.php?idToDel=<?= $item['id'] ?>" class="btn btn-danger ml-1">
                                                             Conferma
                                                         </a></span>
                                                 </div>

@@ -23,7 +23,8 @@ if (!$_SESSION['loggedin']) {
     <!-- Bootstrap core CSS -->
     <link href="assets/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet"
-      href="https://cdn.datatables.net/2.3.8/css/dataTables.bootstrap5.css">
+    href="https://cdn.datatables.net/2.3.8/css/dataTables.bootstrap5.css">
+    <link href="assets/custom.css" rel="stylesheet">
     
     <!-- Favicons -->
 
