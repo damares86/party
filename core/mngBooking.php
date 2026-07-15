@@ -121,7 +121,7 @@ if ($operation == "add") {
         </html>
         ';
 
-    if (!mail($from, $subject, $output, $headers)) {
+    if (!mail($email, $subject, $output, $headers)) {
         $error++;
     }
 
@@ -205,6 +205,7 @@ if ($operation == "add") {
 
         $order_paid = $orders->findById($id);
         $order_number = $order_paid['order_number'];
+        $email = $order_paid['email'];
         
         $orders->table = 'orders_details';
         $order_products = $orders->findBy(['orders_id' => $id]);
@@ -257,7 +258,7 @@ if ($operation == "add") {
         </html>
         ';
 
-        if (!mail($from, $subject, $output, $headers)) {
+        if (!mail($email, $subject, $output, $headers)) {
             $error++;
         }
 

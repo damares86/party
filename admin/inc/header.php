@@ -1,11 +1,3 @@
-<?php
-
-require_once __DIR__ . '/../vendor/autoload.php';   // If installed via composer
-$debug = new \bdk\Debug(array(
-    'collect' => true,
-    'output' => true,
-));
-?>
 <!doctype html>
 <html lang="en">
 
@@ -15,20 +7,17 @@ $debug = new \bdk\Debug(array(
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.84.0">
-    <title>Partynsieme</title>
+    <title>Navbar Template · Bootstrap v5.0</title>
 
-    <!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/"> -->
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/navbars/">
 
 
 
     <!-- Bootstrap core CSS -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/bootstrap.min.css" rel="stylesheet">
 
     <!-- Favicons -->
 
-    <link rel="manifest" href="assets/img/manifest.json">
-    <link rel="icon" href="assets/img/favicons/favicon.ico">
-    <meta name="theme-color" content="#AC1819">
 
     <style>
         .bd-placeholder-img {
@@ -48,7 +37,11 @@ $debug = new \bdk\Debug(array(
 
 
     <!-- Custom styles for this template -->
-    <link href="assets/css/signin.css" rel="stylesheet">
-    <link href="assets/css/custom.css" rel="stylesheet">
+    <link href="assets/navbar.css" rel="stylesheet">
+    <link href="assets/features.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
 </head>
-

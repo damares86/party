@@ -9,6 +9,7 @@ use App\ProductRepository;
 $products = new ProductRepository();
 $list = $products->findAll();
 
+$pagename = 'booking';
 ?>
 
 <body class="text-center">
@@ -16,10 +17,15 @@ $list = $products->findAll();
     <main class="form-signin">
         <form action="core/mngBooking.php" method="POST">
             <img class="mb-2" src="assets/img/logo_agnelli.png" alt="" width="72" height="47">
-            <h1 class="mb-3">Partynsieme</h1>
+            <h1 class="mb-3">Partyinsieme</h1>
+            <?php
+            session_start();
+            if ($_SESSION['loggedin']) {
+                require 'inc/navbar.php';
+            }
+            ?>
             <h5>Prenotazione</h5>
-            <p><a href="index.php"><-- Cassa</a></p>
-            <p><a href="payment.php">Pagamento --></a></p>
+
             <div class="col-12 my-2">
                 <div class="col-12 mb-4">
                     <label for="email" class="form-label">Email</label>
@@ -77,7 +83,7 @@ $list = $products->findAll();
                     <span id="grandTotal"> €</span>
                 </p>
             </div>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Invia</button>
+            <button class="w-100 btn btn-lg text-white" type="submit">Invia</button>
             <?php
             require 'inc/footer.php';
             ?>

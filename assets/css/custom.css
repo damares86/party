@@ -1,8 +1,28 @@
 body{
     background-color: #f2f7ff;
     padding-top: 1em;
+    padding-bottom: 20px;
 }
 main{
     background-color: #fff;
     border-radius: 1em;
+}
+.form-signin{
+    max-width:400px;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link{
+    background-color: #ac1819;
+}
+
+.nav-link{
+    color: #000;
+}
+
+.btn{
+    background-color: #ac1819;
+}
+
+.navbar {
+  margin-bottom: 20px;
 }
