@@ -20,7 +20,7 @@ require 'inc/header.php';
                         <div class="feature-icon bg-primary bg-gradient">
                             <i class="fa fa-calendar-check"></i>
                         </div>
-                        <a href="#" class="icon-link">
+                        <a href="allBooking.php" class="icon-link">
                             <h2>Prenotazioni</h2>
                         </a>
                     </div>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if(!$_SESSION['loggedin']){
+if (!$_SESSION['loggedin']) {
     header("Location: ../error.php");
     exit;
 }
@@ -22,7 +22,9 @@ if(!$_SESSION['loggedin']){
 
     <!-- Bootstrap core CSS -->
     <link href="assets/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet"
+      href="https://cdn.datatables.net/2.3.8/css/dataTables.bootstrap5.css">
+    
     <!-- Favicons -->
 
     <link rel="icon" href="../assets/img/favicon.ico">
@@ -52,4 +54,5 @@ if(!$_SESSION['loggedin']){
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous"
         referrerpolicy="no-referrer" />
+    
 </head>

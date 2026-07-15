@@ -16,6 +16,17 @@ $debug = new \bdk\Debug(array(
 $products = new ProductRepository();
 $orders = new OrderRepository();
 
+if(filter_input(INPUT_GET,'idToDel')){
+    $id = filter_input(INPUT_GET,'idToDel');
+    if($orders->delete($id)){
+        header("Location: ../admin/allBooking.php?msg=bookingDelete");
+        exit;
+    }else{
+        header("Location: ../admin/allBooking.php?err=bookingNoDelete");
+        exit;
+    }
+}
+
 $operation = filter_input(INPUT_POST, "operation");
 
 
