@@ -40,9 +40,13 @@ if ($operation == "add") {
     $last = $orders->findLast();
     $new_order_number = $last['order_number'] + 1;
 
+    // IF PLACES ARE NOT USED, COMMENT THIS CODE
+    $place = filter_input(INPUT_POST,'place');
+
     // inserire ordine nella tabella 'orders'
     $new_order = $orders->insert([
         'email' => $email,
+        'place_id' => $place,
         'order_number' => $new_order_number
     ]);
 

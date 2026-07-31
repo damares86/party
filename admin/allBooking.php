@@ -6,9 +6,13 @@ require 'inc/header.php';
 require_once '../vendor/autoload.php';
 
 use App\OrderRepository;
+use App\PlaceRepository;
 
 $orders = new OrderRepository();
 $list = $orders->findAll();
+$place = new PlaceRepository();
+
+
 ?>
 
 <body>
@@ -38,6 +42,7 @@ $list = $orders->findAll();
                         <tr>
                             <th style="width:10%">Numero prenotazione</th>
                             <th style="width:30%">Email</th>
+                            <th style="width:30%">Ambiente</th>
                             <th style="width:10%">Totale</th>
                             <th style="width:10%">Pagato</th>
                             <th style="width:20%">Azioni</th>
@@ -51,6 +56,11 @@ $list = $orders->findAll();
                             <tr>
                                 <td><?= $item['order_number'] ?></td>
                                 <td><?= $item['email'] ?></td>
+                                <?php
+                                    $id_place = $item['place_id'];
+                                    $order_place = $place->findBy(['id' => $id_place]) ;
+                                ?>
+                                <td><?= $order_place[0]['name'] ?></td>
                                 <td><?= $item['bill'] ?> €</td>
                                 <td>
                                     <?php

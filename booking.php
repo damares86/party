@@ -5,9 +5,13 @@ declare(strict_types=1);
 require 'inc/header.php';
 
 use App\ProductRepository;
+use App\PlaceRepository;
 
 $products = new ProductRepository();
 $list = $products->findAll();
+
+$place = new PlaceRepository();
+$place_list = $place->findAll();
 
 $pagename = 'booking';
 ?>
@@ -27,6 +31,20 @@ $pagename = 'booking';
             <h5>Prenotazione</h5>
 
             <div class="col-12 my-2">
+                <div class="col-12 mb-4">
+                    <label for="email" class="form-label">Ambiente</label>
+                    <select class="form-select product-select" name="place" required>
+                        <option value="">---</option>
+                        <?php foreach ($place_list as $p): ?>
+                        
+                            <option value="<?= $p['id'] ?>"><?= $p['name'] ?></option>
+
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="invalid-feedback">
+                        Selezionare almeno una scelta
+                    </div>
+                </div>
                 <div class="col-12 mb-4">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" name="email" placeholder="mail@mail.it" required>

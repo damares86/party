@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Lug 13, 2026 alle 16:45
+-- Creato il: Lug 31, 2026 alle 10:57
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -24,17 +24,43 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `accounts`
+--
+
+CREATE TABLE `accounts` (
+  `id` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `accounts`
+--
+
+INSERT INTO `accounts` (`id`, `username`, `password`) VALUES
+(2, 'damares86', '$2y$10$h2Xug/pqhbLKZ6w2uPlC3OnEmm1qcddEXgAjEIpvNuOwKT7Es.8JS');
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `orders`
 --
 
 CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `place` varchar(255) DEFAULT NULL,
+  `place_id` int(5) DEFAULT NULL,
   `order_number` int(10) NOT NULL,
   `bill` decimal(6,2) DEFAULT NULL,
   `paid` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `orders`
+--
+
+INSERT INTO `orders` (`id`, `email`, `place_id`, `order_number`, `bill`, `paid`) VALUES
+(37, 'economo@agnelli.it', 9, 2, 8.00, 0);
 
 -- --------------------------------------------------------
 
@@ -50,6 +76,45 @@ CREATE TABLE `orders_details` (
   `qty` int(5) NOT NULL,
   `used` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `orders_details`
+--
+
+INSERT INTO `orders_details` (`id`, `orders_id`, `products_id`, `product_letter`, `qty`, `used`) VALUES
+(44, 34, 1, 'R', 4, 0),
+(45, 34, 2, 'E', 1, 0),
+(46, 35, 1, 'M', 3, 0),
+(47, 36, 2, 'G', 1, 0),
+(48, 36, 1, 'I', 1, 0),
+(49, 37, 1, 'Z', 1, 0),
+(50, 37, 2, 'N', 2, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `place`
+--
+
+CREATE TABLE `place` (
+  `id` int(5) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `place`
+--
+
+INSERT INTO `place` (`id`, `name`) VALUES
+(1, 'Scuola media'),
+(2, 'Liceo'),
+(3, 'ITT'),
+(4, 'Oratorio'),
+(5, 'Parrocchia'),
+(6, 'Cnos-Fap'),
+(7, 'Housing'),
+(8, 'Cinema'),
+(9, 'Dipendenti');
 
 -- --------------------------------------------------------
 
@@ -77,6 +142,12 @@ INSERT INTO `products` (`id`, `name`, `code`, `price`) VALUES
 --
 
 --
+-- Indici per le tabelle `accounts`
+--
+ALTER TABLE `accounts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indici per le tabelle `orders`
 --
 ALTER TABLE `orders`
@@ -86,6 +157,12 @@ ALTER TABLE `orders`
 -- Indici per le tabelle `orders_details`
 --
 ALTER TABLE `orders_details`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indici per le tabelle `place`
+--
+ALTER TABLE `place`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -99,22 +176,34 @@ ALTER TABLE `products`
 --
 
 --
+-- AUTO_INCREMENT per la tabella `accounts`
+--
+ALTER TABLE `accounts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT per la tabella `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT per la tabella `orders_details`
 --
 ALTER TABLE `orders_details`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+
+--
+-- AUTO_INCREMENT per la tabella `place`
+--
+ALTER TABLE `place`
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT per la tabella `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
