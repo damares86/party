@@ -149,7 +149,15 @@ if ($operation == "add") {
     }
 } else if ($operation == "edit") {
     // modifica delle prenotazioni
+    print_r($_POST);
+    exit;
 
+    // TODO
+    // - prendere i recordo in cui c'è la lettera, quindi esistenti
+    //   - se la quantità è 0 eliminarli
+    //   - altrimenti modificare la quantità
+    // - prendere i nuovi record e inserirli
+    // - riconteggiare il prezzo totale
 
 
 } else if ($operation == "book") {
