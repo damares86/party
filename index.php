@@ -34,6 +34,8 @@ $pagename = 'booking';
             if ($_SESSION['id'] > 2) {
                 header("Location: manage.php");
             }
+
+            require "inc/alert.php" ;
             ?>
             <h5>Prenotazione</h5>
 

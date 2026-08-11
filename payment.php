@@ -15,10 +15,15 @@ use App\OrderRepository;
 $products = new ProductRepository();
 $orders = new OrderRepository();
 $list = $products->findAll();
+$msg = '';
+$order_number = '' ;
+$email = '' ;
+if ($_GET) {
 
-$email = $_GET['email'] ? filter_input(INPUT_GET, 'email') : '';
-$order_number = $_GET['order_number'] ? filter_input(INPUT_GET, 'order_number') : '';
-$msg = filter_input(INPUT_GET, 'msg');
+    $email =filter_input(INPUT_GET, 'email');
+    $order_number = filter_input(INPUT_GET, 'order_number');
+    $msg = filter_input(INPUT_GET, 'msg');
+}
 
 $button = $msg == 'orderToPay' ? 'Paga' : 'Cerca';
 $operation = $msg == 'orderToPay' ? 'pay' : 'search';
@@ -100,9 +105,9 @@ $pagename = 'payment';
                 <button class="w-100 btn btn-lg text-white" type="submit"><?= $button ?></button>
             </div>
         </form>
-    <?php
-    require 'inc/footer.php';
-    ?>
+        <?php
+        require 'inc/footer.php';
+        ?>
     </main>
 
 

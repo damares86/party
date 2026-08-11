@@ -129,10 +129,10 @@ if ($operation == "add") {
     }
 
     if ($error > 0) {
-        header("Location: ../booking.php?err=errSendMail");
+        header("Location: ../index.php?err=errSendMail");
         exit;
     } else {
-        header("Location: ../booking.php?msg=mailSend");
+        header("Location: ../index.php?msg=mailSend");
         exit;
     }
 } else if ($operation == "edit") {

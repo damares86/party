@@ -50,4 +50,8 @@ require_once __DIR__ . '/../vendor/autoload.php';   // If installed via composer
     <link href="assets/css/signin.css" rel="stylesheet">
     <link href="assets/css/custom.css" rel="stylesheet">
 </head>
-
+<?php
+foreach (glob("locale/*.php") as $row) {
+    require "$row";
+}
+?>

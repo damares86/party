@@ -15,11 +15,15 @@ use App\OrderRepository;
 $products = new ProductRepository();
 $orders = new OrderRepository();
 $list = $products->findAll();
+$msg = '';
+$order_number = '' ;
+$email = '' ;
+if ($_GET) {
 
-$email = $_GET['email'] ? filter_input(INPUT_GET, 'email') : '';
-$order_number = $_GET['order_number'] ? filter_input(INPUT_GET, 'order_number') : '';
-$msg = filter_input(INPUT_GET, 'msg');
-
+    $email =filter_input(INPUT_GET, 'email');
+    $order_number = filter_input(INPUT_GET, 'order_number');
+    $msg = filter_input(INPUT_GET, 'msg');
+}
 $button = $msg == 'orderToUse' ? 'Conferma utilizzo' : 'Cerca';
 $operation = $msg == 'orderToUse' ? 'book' : 'check';
 
