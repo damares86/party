@@ -46,7 +46,7 @@ $pagename = 'payment';
                 <?php
                 if ($msg == 'orderToPay') {
                 ?>
-                <a href="payment.php"><b>Cerca un altro ordine</b></a>
+                    <a href="payment.php"><b>Cerca un altro ordine</b></a>
 
                 <?php
                 }
@@ -98,11 +98,11 @@ $pagename = 'payment';
                 <input type="hidden" name="operation" value="<?= $operation ?>">
 
                 <button class="w-100 btn btn-lg text-white" type="submit"><?= $button ?></button>
-                <?php
-                require 'inc/footer.php';
-                ?>
             </div>
         </form>
+    <?php
+    require 'inc/footer.php';
+    ?>
     </main>
 
 

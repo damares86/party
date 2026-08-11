@@ -37,7 +37,7 @@ require 'inc/header.php';
                             <i class="fa fa-cutlery"></i>
                         </div>
                         <a href="allFood.php" class="icon-link">
-                            <h2>Tipi di cibo</h2>
+                            <h2>Tipi di bevande</h2>
                         </a>
                     </div>
                 </div>

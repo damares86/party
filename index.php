@@ -168,11 +168,11 @@ $pagename = 'booking';
                     </div>
                 </div>
             </div>
-            <?php
-            require 'inc/footer.php';
-            ?>
 
         </form>
+    <?php
+    require 'inc/footer.php';
+    ?>
     </main>
 
     <script>

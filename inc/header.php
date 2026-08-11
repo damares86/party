@@ -1,10 +1,10 @@
 <?php
 
 require_once __DIR__ . '/../vendor/autoload.php';   // If installed via composer
-$debug = new \bdk\Debug(array(
+/* $debug = new \bdk\Debug(array(
     'collect' => true,
     'output' => true,
-));
+));  */
 ?>
 <!doctype html>
 <html lang="en">
@@ -25,7 +25,7 @@ $debug = new \bdk\Debug(array(
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <!-- Favicons -->
 
-    <link rel="manifest" href="assets/img/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/img/favicon.ico">
     <meta name="theme-color" content="#AC1819">
 

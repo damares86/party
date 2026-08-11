@@ -130,13 +130,13 @@ $pagename = 'index';
                     <input type="hidden" name="operation" value="<?= $operation ?>">
 
                     <button class="w-100 btn btn-lg text-white" type="submit"><?= $button ?></button>
-                    <?php
-                    require 'inc/footer.php';
-                    ?>
                 </div>
             </div>
             </div>
         </form>
+    <?php
+    require 'inc/footer.php';
+    ?>
     </main>
 
 

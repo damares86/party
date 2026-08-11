@@ -5,3 +5,6 @@
      </a>
  </p>
  <a href="admin" class="d-block mb-3">Admin area -></a>
+
+ 
+  <script src="assets/js/pwa.js"></script>
