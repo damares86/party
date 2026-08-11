@@ -3,9 +3,9 @@
 $active_index = '';
 $active_payment = '';
 $active_booking = '';
-$link_index = 'index.php';
+$link_index = 'manage.php';
 $link_payment = 'payment.php';
-$link_booking = 'booking.php';
+$link_booking = 'index.php';
 
 if ($pagename == 'index') {
     $active_index = 'active';

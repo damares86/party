@@ -22,7 +22,7 @@ $debug = new \bdk\Debug(array(
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
     <!-- Favicons -->
 
     <link rel="manifest" href="assets/img/manifest.json">

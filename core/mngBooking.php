@@ -29,68 +29,56 @@ if(filter_input(INPUT_GET,'idToDel')){
 
 $operation = filter_input(INPUT_POST, "operation");
 
-
 if ($operation == "add") {
-
+    
     // get email
     $email = filter_input(INPUT_POST, 'email');
-
+    
     // range for the random letter
-
+    
     $last = $orders->findLast();
     $new_order_number = $last['order_number'] + 1;
-
+    
     // IF PLACES ARE NOT USED, COMMENT THIS CODE
     $place = filter_input(INPUT_POST,'place');
-
+    $packages = count($_POST['items']);
+    $bill = $packages * 5;
+    
     // inserire ordine nella tabella 'orders'
     $new_order = $orders->insert([
         'email' => $email,
         'place_id' => $place,
-        'order_number' => $new_order_number
-    ]);
-
+        'order_number' => $new_order_number,
+        'bill' => $bill
+        ]);
+        
+ 
     // get the inserted order id
     $order_inserted = $orders->findLast();
     $order_inserted_id = $order_inserted['id'];
 
     // create an array with all the products, for the email
     $order_products = [];
-    $total_price = 0;
-    $letters = range('A', 'Z');
 
     // cycle the products
     foreach ($_POST['items'] as $item) {
 
-
-        $letter = $letters[random_int(0, count($letters) - 1)];
         $orders->table = 'orders_details';
 
         $new_order_detail = $orders->insert([
             'orders_id' => $order_inserted_id,
-            'products_id' => $item['product_id'],
-            'product_letter' => $letter,
-            'qty' => $item['qty']
+            'products_id' => $item['product_id']
         ]);
 
         $prod_stmt = $products->findById($item['product_id']);
         $product_name = $prod_stmt['name'];
-        $product_code = $prod_stmt['code'];
-        $product_price = $prod_stmt['price'] * $item['qty'];
 
         $order_products[] = array(
-            'product_name' => $product_name,
-            'product_code' => $product_code,
-            'product_price' => $product_price,
-            'product_letter' => $letter,
-            'qty' => $item['qty']
+            'product_name' => $product_name
         );
 
-        $total_price += $product_price;
     }
 
-    $orders->table = 'orders';
-    $orders->update($order_inserted_id, ['bill' => $total_price]);
 
     $error = 0;
 
@@ -119,16 +107,17 @@ if ($operation == "add") {
                     </h3>
                     
                     <h2 style="margin-top:0;">
-                    Dati prenotazione <u>' . $new_order_number . '</u>
+                    Numero prenotazione: <u>' . $new_order_number . '</u>
                     </h2>
                     <ul>';
     foreach ($order_products as $list_item) {
-        $output .= '    <li style="margin:1em auto;">' . $list_item['qty'] . 'x ' . $list_item['product_name'] . ' -> cod. <strong>' . $list_item['product_code'] . '-' . $new_order_number . $list_item['product_letter'] . '</strong> - ' . $list_item['product_price'] . '€</li>';
+        $output .= '    <li style="margin:1em auto;">1 pacchetto con <strong>' . $list_item['product_name'] . '</strong> </li>';
     }
 
     $output .= '    </ul>
                     <hr>
-                    <p>Prezzo totale da pagare: <strong>' . $total_price . '€</strong></p>
+                    <p>Totale pacchetti: <strong>'.$packages.'</strong></p>
+                    <p>Prezzo totale da pagare: <strong>' . $bill . '€</strong></p>
                     <hr>
                     <p>In caso di errori presenti nell\'ordine, contattare <a href="mailto:economo@agnelli.it">economo@agnelli.it</a></p>
                 </div>
