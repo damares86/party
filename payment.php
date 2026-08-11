@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 require 'inc/header.php';
 session_start();
-if(!$_SESSION['loggedin']){
+if (!$_SESSION['loggedin']) {
     header("Location: error.php");
     exit;
 }
+
 use App\ProductRepository;
 use App\OrderRepository;
 
@@ -42,7 +43,14 @@ $pagename = 'payment';
             ?>
             <h5>Pagamento</h5>
             <div class="col-12 my-5">
+                <?php
+                if ($msg == 'orderToPay') {
+                ?>
+                <a href="payment.php"><b>Cerca un altro ordine</b></a>
 
+                <?php
+                }
+                ?>
                 <?php
                 if ($msg == 'paidSucc') {
                 ?>

@@ -132,6 +132,16 @@ $order_products = $orders->findBy(['orders_id' => $idToMod]);
                         <p><strong>Prezzo totale:</strong>
                             <span id="grandTotal"> €</span>
                         </p>
+                        <div class="form-check form-switch">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Pagato</label>
+                            <?php
+                                $checked = '' ;
+                                if($orderToMod['paid'] == 1){
+                                    $checked = 'checked';
+                                }
+                            ?>
+                            <input class="form-check-input" type="checkbox" role="switch" name="paid" id="flexSwitchCheckDefault" <?= $checked ?>>
+                        </div>
                     </div>
                     <button class="w-100 btn btn-success btn-lg text-white my-3" type="submit">Invia</button>
 

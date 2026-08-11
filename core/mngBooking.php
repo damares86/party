@@ -136,6 +136,7 @@ if ($operation == "add") {
         exit;
     }
 } else if ($operation == "edit") {
+
     $idToMod = filter_input(INPUT_POST, 'idToMod', FILTER_VALIDATE_INT);
 
     if (!$idToMod) {
@@ -289,10 +290,13 @@ if ($operation == "add") {
         // di elementi presenti nel POST
         $bill = count($items) * $packagePrice;
 
+        $paid = $_POST['paid'] ? 1 : 0 ;
+
         $orders->update($idToMod, [
             'email'    => $email,
             'place_id' => $placeId,
-            'bill'     => $bill
+            'bill'     => $bill,
+            'paid' => $paid
         ]);
 
         /*

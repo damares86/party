@@ -29,13 +29,9 @@ $operation = filter_input(INPUT_POST, 'operation');
 
 if($operation == 'add'){
     $name = filter_input(INPUT_POST,'name');
-    $code = filter_input(INPUT_POST,'code');
-    $price = filter_input(INPUT_POST,'price');
 
     if($products->insert([
-        'name' => $name,
-        'code' => $code,
-        'price' => $price
+        'name' => $name
     ])){
         header("Location: ../admin/allFood.php?msg=foodAdd");
         exit;
@@ -46,13 +42,9 @@ if($operation == 'add'){
 }else if($operation == 'edit'){
     $idToMod = filter_input(INPUT_POST,'idToMod');
     $name = filter_input(INPUT_POST,'name');
-    $code = filter_input(INPUT_POST,'code');
-    $price = filter_input(INPUT_POST,'price');
 
     if($products->update($idToMod,[
-        'name' => $name,
-        'code' => $code,
-        'price' => $price
+        'name' => $name
     ])){
         header("Location: ../admin/allFood.php?msg=foodEdit");
         exit;
