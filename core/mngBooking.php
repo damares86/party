@@ -16,12 +16,12 @@ $debug = new \bdk\Debug(array(
 $products = new ProductRepository();
 $orders = new OrderRepository();
 
-if(filter_input(INPUT_GET,'idToDel')){
-    $id = filter_input(INPUT_GET,'idToDel');
-    if($orders->delete($id)){
+if (filter_input(INPUT_GET, 'idToDel')) {
+    $id = filter_input(INPUT_GET, 'idToDel');
+    if ($orders->delete($id)) {
         header("Location: ../admin/allBooking.php?msg=bookingDelete");
         exit;
-    }else{
+    } else {
         header("Location: ../admin/allBooking.php?err=bookingNoDelete");
         exit;
     }
@@ -30,29 +30,29 @@ if(filter_input(INPUT_GET,'idToDel')){
 $operation = filter_input(INPUT_POST, "operation");
 
 if ($operation == "add") {
-    
+
     // get email
     $email = filter_input(INPUT_POST, 'email');
-    
+
     // range for the random letter
-    
+
     $last = $orders->findLast();
     $new_order_number = $last['order_number'] + 1;
-    
+
     // IF PLACES ARE NOT USED, COMMENT THIS CODE
-    $place = filter_input(INPUT_POST,'place');
+    $place = filter_input(INPUT_POST, 'place');
     $packages = count($_POST['items']);
     $bill = $packages * 5;
-    
+
     // inserire ordine nella tabella 'orders'
     $new_order = $orders->insert([
         'email' => $email,
         'place_id' => $place,
         'order_number' => $new_order_number,
         'bill' => $bill
-        ]);
-        
- 
+    ]);
+
+
     // get the inserted order id
     $order_inserted = $orders->findLast();
     $order_inserted_id = $order_inserted['id'];
@@ -76,7 +76,6 @@ if ($operation == "add") {
         $order_products[] = array(
             'product_name' => $product_name
         );
-
     }
 
 
@@ -116,7 +115,7 @@ if ($operation == "add") {
 
     $output .= '    </ul>
                     <hr>
-                    <p>Totale pacchetti: <strong>'.$packages.'</strong></p>
+                    <p>Totale pacchetti: <strong>' . $packages . '</strong></p>
                     <p>Prezzo totale da pagare: <strong>' . $bill . '€</strong></p>
                     <hr>
                     <p>In caso di errori presenti nell\'ordine, contattare <a href="mailto:economo@agnelli.it">economo@agnelli.it</a></p>
@@ -137,18 +136,187 @@ if ($operation == "add") {
         exit;
     }
 } else if ($operation == "edit") {
-    // modifica delle prenotazioni
-    print_r($_POST);
-    exit;
+    $idToMod = filter_input(INPUT_POST, 'idToMod', FILTER_VALIDATE_INT);
 
-    // TODO
-    // - prendere i recordo in cui c'è la lettera, quindi esistenti
-    //   - se la quantità è 0 eliminarli
-    //   - altrimenti modificare la quantità
-    // - prendere i nuovi record e inserirli
-    // - riconteggiare il prezzo totale
+    if (!$idToMod) {
+        die('ID ordine non valido');
+    }
+
+    $items = $_POST['items'] ?? [];
+
+    $orders = new OrderRepository();
+
+    // La tabella dei dettagli
+    $orders->table = 'orders_details';
+
+    try {
+
+        // Inizio transazione
+        $orders->beginTransaction();
+
+        /*
+     * 1. Recuperiamo i dettagli attualmente presenti
+     *    per questo ordine
+     */
+        $existingDetails = $orders->findBy([
+            'orders_id' => $idToMod
+        ]);
+
+        /*
+     * Creiamo un array con gli ID presenti nel POST.
+     *
+     * Nel tuo esempio:
+     *
+     * 51
+     * 52
+     * nuovo -> nessun ID
+     */
+        $postedDetailIds = [];
+
+        foreach ($items as $item) {
+
+            if (!empty($item['detail_id'])) {
+                $postedDetailIds[] = (int)$item['detail_id'];
+            }
+        }
 
 
+        /*
+     * 2. ELIMINAZIONI
+     *
+     * Se un dettaglio esiste nel DB ma il suo ID
+     * non è più presente nel POST, significa che
+     * l'utente lo ha eliminato.
+     */
+        foreach ($existingDetails as $detail) {
+
+            $detailId = (int)$detail['id'];
+
+            if (!in_array($detailId, $postedDetailIds, true)) {
+
+                $orders->delete($detailId);
+            }
+        }
+
+
+        /*
+     * 3. INSERT / UPDATE
+     */
+        foreach ($items as $item) {
+
+            $productId = filter_var(
+                $item['product_id'] ?? null,
+                FILTER_VALIDATE_INT
+            );
+
+            if (!$productId) {
+                throw new RuntimeException(
+                    'Prodotto non valido'
+                );
+            }
+
+
+            /*
+         * DETAIL ID PRESENTE
+         *
+         * È un record già esistente → UPDATE
+         */
+            if (!empty($item['detail_id'])) {
+
+                $detailId = (int)$item['detail_id'];
+
+                $orders->update($detailId, [
+                    'products_id' => $productId
+                ]);
+            } else {
+
+                /*
+             * DETAIL ID ASSENTE
+             *
+             * È una nuova riga → INSERT
+             */
+                $orders->insert([
+                    'orders_id' => $idToMod,
+                    'products_id' => $productId
+                ]);
+            }
+        }
+
+
+        /*
+     * 4. Aggiornamento dell'ordine principale
+     *
+     * Qui puoi aggiornare email, ambiente, ecc.
+     */
+
+        $orders->table = 'orders';
+
+        $email = filter_input(
+            INPUT_POST,
+            'email',
+            FILTER_VALIDATE_EMAIL
+        );
+
+        $placeId = filter_input(
+            INPUT_POST,
+            'place',
+            FILTER_VALIDATE_INT
+        );
+
+        $orders->update($idToMod, [
+            'email' => $email,
+            'place_id' => $placeId
+        ]);
+        // Aggiorna l'ordine principale
+        $orders->table = 'orders';
+
+        $email = filter_input(
+            INPUT_POST,
+            'email',
+            FILTER_VALIDATE_EMAIL
+        );
+
+        $placeId = filter_input(
+            INPUT_POST,
+            'place',
+            FILTER_VALIDATE_INT
+        );
+
+        // Ogni pacchetto costa 5 €
+        $packagePrice = 5;
+
+        // Il numero di pacchetti corrisponde al numero
+        // di elementi presenti nel POST
+        $bill = count($items) * $packagePrice;
+
+        $orders->update($idToMod, [
+            'email'    => $email,
+            'place_id' => $placeId,
+            'bill'     => $bill
+        ]);
+
+        /*
+     * Se arriviamo qui senza errori,
+     * confermiamo tutte le modifiche.
+     */
+        $orders->commit();
+
+
+        header(
+            'Location: ../admin/allBooking.php?msg=bookingEditOk'
+        );
+
+        exit;
+    } catch (Throwable $e) {
+
+        /*
+     * Qualsiasi errore annulla TUTTE le modifiche.
+     */
+        $orders->rollBack();
+
+        die('Errore durante la modifica dell\'ordine: '
+            . $e->getMessage());
+    }
 } else if ($operation == "book") {
 
     $order_number = filter_input(INPUT_POST, 'number');
@@ -218,7 +386,7 @@ if ($operation == "add") {
         $order_paid = $orders->findById($id);
         $order_number = $order_paid['order_number'];
         $email = $order_paid['email'];
-        
+
         $orders->table = 'orders_details';
         $order_products = $orders->findBy(['orders_id' => $id]);
 
@@ -256,7 +424,7 @@ if ($operation == "add") {
                     </h2>
                     <ul>';
         foreach ($order_products as $list_item) {
-            
+
             $product_data = $products->findById($list_item['products_id']);
 
             $output .= '    <li style="margin:1em auto;">' . $list_item['qty'] . 'x ' . $product_data['name'] . ' -> cod. <strong>' . $product_data['code'] . '-' . $order_number . $list_item['product_letter'] . '</strong></li>';
