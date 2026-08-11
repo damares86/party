@@ -24,8 +24,15 @@ $pagename = 'booking';
             <h1 class="mb-3">Partyinsieme</h1>
             <?php
             session_start();
+
             if ($_SESSION['loggedin']) {
                 require 'inc/navbar.php';
+            }
+            if ($_SESSION['id'] == 2) {
+                header("Location: payment.php");
+            }
+            if ($_SESSION['id'] > 2) {
+                header("Location: manage.php");
             }
             ?>
             <h5>Prenotazione</h5>

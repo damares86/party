@@ -331,30 +331,41 @@ if ($operation == "add") {
         exit;
     }
 
-    $orders_id = $order_to_check[0]['id'];
-    $products_id = filter_input(INPUT_POST, 'product_id');
-    $product_letter = filter_input(INPUT_POST, 'letter');
-
-    $orders->table = 'orders_details';
-
-    $order_check = $orders->findBy([
-        'orders_id' => $orders_id,
-        'products_id' => $products_id,
-        'product_letter' => $product_letter
-    ]);
-
-    if ($order_check[0]['used'] == 1) {
+    if ($order_to_check[0]['used'] == 1) {
         header("Location: ../index.php?err=used");
         exit;
     }
-    $id = $order_check[0]['id'];
+
+    $id = $order_to_check[0]['id'];
     if ($orders->update($id, ['used' => 1])) {
-        header("Location: ../index.php?msg=bookSucc");
+        header("Location: ../manage.php?msg=bookSucc");
         exit;
     } else {
-        header("Location: ../index.php?err=bookErr");
+        header("Location: ../manage.php?err=bookErr");
         exit;
     }
+}  else if ($operation == "check") {
+    // ricerca prenotazione da pagare
+
+    $email = filter_input(INPUT_POST, 'email');
+    $order_number = filter_input(INPUT_POST, 'number');
+    $order_check = $orders->findBy([
+        'order_number' => $order_number,
+        'email' => $email
+    ]);
+
+    $msg = '';
+
+    if (count($order_check) == 0) {
+        $msg = 'msg=noOrder';
+    } else if ($order_check[0]['used'] == 0) {
+        $msg = 'msg=orderToUse&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
+    } else if ($order_check[0]['used'] == 1) {
+        $msg = 'err=orderUsed&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
+    }
+
+    header("Location: ../manage.php?$msg");
+    exit;
 } else if ($operation == "search") {
     // ricerca prenotazione da pagare
 
