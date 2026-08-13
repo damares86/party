@@ -43,6 +43,8 @@ $pagename = 'index';
             <h1 class="mb-3 ">Partyinsieme</h1>
             <?php
             require 'inc/navbar.php';
+            
+            require "inc/alert.php";
             ?>
             <h5>Cerca prenotazione</h5>
             <div class="col-12 my-5">

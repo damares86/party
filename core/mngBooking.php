@@ -8,10 +8,6 @@ use App\OrderRepository;
 
 require_once __DIR__ . '/../vendor/autoload.php';   // If installed via composer
 
-$debug = new \bdk\Debug(array(
-    'collect' => true,
-    'output' => true,
-));
 
 $products = new ProductRepository();
 $orders = new OrderRepository();
@@ -45,12 +41,21 @@ if ($operation == "add") {
     $bill = $packages * 5;
 
     // inserire ordine nella tabella 'orders'
-    $new_order = $orders->insert([
+    if(!$orders->insert([
         'email' => $email,
         'place_id' => $place,
         'order_number' => $new_order_number,
         'bill' => $bill
-    ]);
+    ])){
+        header("Location: ../index.php?err=errAddBooking");
+        exit;
+    }
+/*     $new_order = $orders->insert([
+        'email' => $email,
+        'place_id' => $place,
+        'order_number' => $new_order_number,
+        'bill' => $bill
+    ]); */
 
 
     // get the inserted order id
@@ -379,7 +384,7 @@ if ($operation == "add") {
     $msg = '';
 
     if (count($order_check) == 0) {
-        $msg = 'msg=noOrder';
+        $msg = 'err=noOrder';
     } else if ($order_check[0]['paid'] == 0) {
         $msg = 'msg=orderToPay&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
     } else if ($order_check[0]['paid'] == 1) {
@@ -458,7 +463,7 @@ if ($operation == "add") {
         }
 
         if ($error > 0) {
-            header("Location: ../payment.php?err=errPaySendMail");
+            header("Location: ../payment.php?msg=paidSucc&err=errPaySendMail");
             exit;
         } else {
             header("Location: ../payment.php?msg=paidSucc");

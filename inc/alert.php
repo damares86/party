@@ -1,5 +1,4 @@
 <?php
-
     if(filter_input(INPUT_GET,"msg")){
     ?>
     <div class="alert alert-success alert-dismissible fade show shadow" role="alert">

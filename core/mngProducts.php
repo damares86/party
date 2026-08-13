@@ -7,10 +7,6 @@ use App\ProductRepository;
 
 require_once __DIR__ . '/../vendor/autoload.php';   // If installed via composer
 
-$debug = new \bdk\Debug(array(
-    'collect' => true,
-    'output' => true,
-));
 
 $products = new ProductRepository();
 

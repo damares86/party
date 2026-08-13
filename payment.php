@@ -45,6 +45,8 @@ $pagename = 'payment';
             <h1 class="mb-3 ">Partyinsieme</h1>
             <?php
             require 'inc/navbar.php';
+            
+            require "inc/alert.php";
             ?>
             <h5>Pagamento</h5>
             <div class="col-12 my-5">
@@ -59,9 +61,9 @@ $pagename = 'payment';
                 <?php
                 if ($msg == 'paidSucc') {
                 ?>
-                    <div class="my-3 p-3 bg-success text-white">
+<!--                     <div class="my-3 p-3 bg-success text-white">
                         <b>Ordine pagato</b>
-                    </div>
+                    </div> -->
                     <div class="my-3">
                         <b>Cerca un altro ordine</b>
                     </div>
@@ -93,9 +95,9 @@ $pagename = 'payment';
                 <?php
                 } else if ($msg == 'orderPaid') {
                 ?>
-                    <div class="my-3 p-3 bg-success text-white">
+<!--                     <div class="my-3 p-3 bg-success text-white">
                         <b>Ordine pagato</b>
-                    </div>
+                    </div> -->
                 <?php
                 }
                 ?>
