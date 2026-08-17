@@ -86,7 +86,7 @@ $pagename = 'payment';
                 <?php
                 if ($msg == 'orderToPay') {
                 ?>
-                    <div class="col-12 mb-4">
+                    <div class="col-12 mb-4 bg-warning py-3">
                         <label for="code" class="form-label">Totale da pagare</label>
                         <br><b><?= $bill ?> €</b>
                     </div>

@@ -17,7 +17,7 @@
                     <a class="nav-link" href="allAccounts.php">Utenti</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="allFood.php">Tipi di cibo</a>
+                    <a class="nav-link" href="allFood.php">Tipi di bevande</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../core/logout.php">Logout</a>

@@ -64,7 +64,7 @@ $pagename = 'booking';
                     </div>
                 </div>
                 <h6 class="border-top pt-3">Ordine</h6>
-                <p>Ogni pacchetto comprende un piatto di salsiccia e patatine più la bibita. Il costo del singolo pacchetto è di 5€</p>
+                <p>Ogni pacchetto comprende un piatto di salsiccia e patatine più la bibita. <u>Il costo del singolo pacchetto è di 5</u>€</p>
 
                 <div id="orderContainer" class="border-top">
                     <div class="row mb-3 order-row">

@@ -35,7 +35,7 @@ $order_products = $orders->findBy(['orders_id' => $idToMod]);
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
-                <h2 class="pb-2 border-bottom">Modifica prenotazione</h2>
+                <h2 class="pb-2 border-bottom">Modifica prenotazione numero: <u><?= $orderToMod['order_number'] ?></u></h2>
 
                 <form action="../core/mngBooking.php" method="POST">
 
