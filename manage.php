@@ -85,8 +85,7 @@ $pagename = 'index';
                             <label for="address" class="form-label">Codice</label>
                             <select class="form-select mb-3" name="product_code" required>
                                 <option value="">---</option>
-                                <option value="SAL">SAL</option>
-                                <option value="PAT">PAT</option>
+                                <option value="PIA">PIA</option>
                                 <option value="BEV">BEV</option>
                             </select>
                         </div>
@@ -123,27 +122,42 @@ $pagename = 'index';
 
                                 <input type="hidden" name="idToUse" value="<?= $order[0]['id'] ?>">
                                 <?php
-                                    $prod = '' ;
-                                    if($order[0]['product_code'] == "SAL"){
-                                        $prod = 'Salsiccia';
-                                    }else if($order[0]['product_code'] == "PAT"){
-                                        $prod = "Patatine" ;
-                                    }else{
-                                        $prod_id = $order[0]['products_id'];
-                                        $drink = $products->findById($prod_id);
-                                        $prod = $drink['name'];
-                                    }
+                                $prod = '';
+                                if ($order[0]['product_code'] == "PIA") {
+                                    $prod = 'Piatto';
                                 ?>
-                                <div class="col-8 py-3 border">
-                                    <p class="product-price"><b><?= $prod ?></b></p>
-                                </div>
-                                <div class="col-4 py-3 border">
+                                    <div class="col-8 py-3 border">
+                                        <p class="product-price"><b><?= $prod ?></b></p>
+                                    </div>
+                                    <div class="col-4 py-3 border">
 
-                                    <b>
-                                        <?= $order[0]['qty'] ?>
-                                    </b>
+                                        <b>
+                                            <?= $order[0]['qty'] ?>
+                                        </b>
 
-                                </div>
+                                    </div>
+                                    <?php
+                                } else {
+                                    $prod_id = explode(',', $order[0]['products_id']);
+                                    foreach ($prod_id as $item) {
+
+                                        $drink = $products->findById($item);
+                                        $prod = $drink['name'];
+                                    ?>
+                                        <div class="col-8 py-3 border">
+                                            <p class="product-price"><b><?= $prod ?></b></p>
+                                        </div>
+                                        <div class="col-4 py-3 border">
+
+                                            <b>
+                                                1
+                                            </b>
+
+                                        </div>
+                                <?php
+                                    }
+                                }
+                                ?>
 
                             </div>
                         </div>

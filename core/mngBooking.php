@@ -157,8 +157,7 @@ if ($operation == "add") {
             </body>
         </html>
         ';
-    print_r($output);
-    exit;
+        
     if (!mail($email, $subject, $output, $headers)) {
         $error++;
     }
@@ -436,9 +435,8 @@ if ($operation == "add") {
         $qty = $order_paid['qty'];
 
         $orders->table = 'orders_details';
-        $sal_products = $orders->findBy(['orders_id' => $id, 'product_code' => 'SAL']);
+        $pia_products = $orders->findBy(['orders_id' => $id, 'product_code' => 'PIA']);
 
-        $pat_products = $orders->findBy(['orders_id' => $id, 'product_code' => 'PAT']);
         $bev_products = $orders->findBy(['orders_id' => $id, 'product_code' => 'BEV']);
 
         ////////////////////////////////////////////////
@@ -473,23 +471,26 @@ if ($operation == "add") {
                     Dati prenotazione <u>' . $order_number . '</u>
                     </h2>
                     <ul>
-                    <li style="margin:1em auto;">' . $qty . ' piatti salsiccia -> cod. <strong>SAL-' . $order_number . $sal_products[0]['letter'] . '</strong></li>
-                    <li style="margin:1em auto;">' . $qty . ' piatti patatine -> cod. <strong>PAT-' . $order_number . $pat_products[0]['letter'] . '</strong></li>';
-        foreach ($bev_products as $list_item) {
+                    <li style="margin:1em auto;">' . $qty . ' piatti  -> cod. <strong>PIA-' . $order_number . $pia_products[0]['letter'] . '</strong></li>
+                    <li style="margin:1em auto;">' . $qty . ' bibite -> cod. <strong>BEV-' . $order_number . $bev_products[0]['letter'] . '</strong></li>
+                    <ul>';
+                    $bev_arr = explode(',',$bev_products[0]['products_id']);
+        foreach ($bev_arr as $list_item) {
+            
+            $product_data = $products->findById($list_item);
 
-            $product_data = $products->findById($list_item['products_id']);
-
-            $output .= '    <li style="margin:1em auto;">1 ' . $product_data['name'] . ' -> cod. <strong>BEV-' . $order_number . $list_item['letter'] . '</strong></li>';
+            $output .= '    <li style="margin:1em auto;">1 ' . $product_data['name'] . '</strong></li>';
         }
 
-        $output .= '    </ul>
+        $output .= '        </ul>
+                        </ul>
                     <hr>
                     <p>In caso di errori presenti nell\'ordine, contattare <a href="mailto:economo@agnelli.it">economo@agnelli.it</a></p>
                 </div>
             </body>
         </html>
         ';
-
+        
         if (!mail($email, $subject, $output, $headers)) {
             $error++;
         }
