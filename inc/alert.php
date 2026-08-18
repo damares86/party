@@ -1,6 +1,7 @@
 <?php
     if(filter_input(INPUT_GET,"msg")){
       $color = 'success' ;
+      $msg = filter_input(INPUT_GET,"msg");
       if($msg == "orderToPay"){
         $color = 'warning';
       }
@@ -8,7 +9,6 @@
     <div class="alert alert-<?= $color ?> alert-dismissible fade show shadow" role="alert">
       <i class="bi bi-check-circle"></i>
       <?php
-      $msg = filter_input(INPUT_GET,"msg");
       $alert_label = "msg_$msg";
       echo $$alert_label;
       ?>

@@ -41,21 +41,16 @@ if ($operation == "add") {
     $bill = $packages * 5;
 
     // inserire ordine nella tabella 'orders'
-    if(!$orders->insert([
+    if (!$orders->insert([
         'email' => $email,
         'place_id' => $place,
         'order_number' => $new_order_number,
+        'qty' => $packages,
         'bill' => $bill
-    ])){
+    ])) {
         header("Location: ../index.php?err=errAddBooking");
         exit;
     }
-/*     $new_order = $orders->insert([
-        'email' => $email,
-        'place_id' => $place,
-        'order_number' => $new_order_number,
-        'bill' => $bill
-    ]); */
 
 
     // get the inserted order id
@@ -65,13 +60,45 @@ if ($operation == "add") {
     // create an array with all the products, for the email
     $order_products = [];
 
-    // cycle the products
-    foreach ($_POST['items'] as $item) {
+    // inserisco i cibi
+    $orders->table = 'orders_details';
+    $letters = range('A', 'Z');
 
-        $orders->table = 'orders_details';
+    $sal_letter = $letters[random_int(0, count($letters) - 1)];
+    // salsiccie
+    if (!$orders->insert([
+        'orders_id' => $order_inserted_id,
+        'product_code' => 'SAL',
+        'letter' => $sal_letter,
+        'qty' => $packages,
+        'products_id' => 0
+    ])) {
+        header("Location: ../index.php?err=errAddProductBooking");
+        exit;
+    }
+
+    $pat_letter = $letters[random_int(0, count($letters) - 1)];
+    // patatine
+    if (!$orders->insert([
+        'orders_id' => $order_inserted_id,
+        'product_code' => 'PAT',
+        'letter' => $pat_letter,
+        'qty' => $packages,
+        'products_id' => 0
+    ])) {
+        header("Location: ../index.php?err=errAddProductBooking");
+        exit;
+    }
+
+    // ciclo le bevande
+    foreach ($_POST['items'] as $item) {
+        $bev_letter = $letters[random_int(0, count($letters) - 1)];
 
         $new_order_detail = $orders->insert([
             'orders_id' => $order_inserted_id,
+            'product_code' => 'BEV',
+            'letter' => $bev_letter,
+            'qty' => 1,
             'products_id' => $item['product_id']
         ]);
 
@@ -128,7 +155,8 @@ if ($operation == "add") {
             </body>
         </html>
         ';
-
+    print_r($output);
+    exit;
     if (!mail($email, $subject, $output, $headers)) {
         $error++;
     }
@@ -295,7 +323,7 @@ if ($operation == "add") {
         // di elementi presenti nel POST
         $bill = count($items) * $packagePrice;
 
-        $paid = $_POST['paid'] ? 1 : 0 ;
+        $paid = $_POST['paid'] ? 1 : 0;
 
         $orders->update($idToMod, [
             'email'    => $email,
@@ -349,7 +377,7 @@ if ($operation == "add") {
         header("Location: ../manage.php?err=bookErr");
         exit;
     }
-}  else if ($operation == "check") {
+} else if ($operation == "check") {
     // ricerca prenotazione da pagare
 
     $email = filter_input(INPUT_POST, 'email');
