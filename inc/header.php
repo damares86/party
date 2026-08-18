@@ -1,10 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../vendor/autoload.php';   // If installed via composer
-/* $debug = new \bdk\Debug(array(
-    'collect' => true,
-    'output' => true,
-));  */
+
 ?>
 <!doctype html>
 <html lang="en">

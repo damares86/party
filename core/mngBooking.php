@@ -64,12 +64,12 @@ if ($operation == "add") {
     $orders->table = 'orders_details';
     $letters = range('A', 'Z');
 
-    $sal_letter = $letters[random_int(0, count($letters) - 1)];
+    $pia_letter = $letters[random_int(0, count($letters) - 1)];
     // salsiccie
     if (!$orders->insert([
         'orders_id' => $order_inserted_id,
-        'product_code' => 'SAL',
-        'letter' => $sal_letter,
+        'product_code' => 'PIA',
+        'letter' => $pia_letter,
         'qty' => $packages,
         'products_id' => 0
     ])) {
@@ -77,31 +77,22 @@ if ($operation == "add") {
         exit;
     }
 
-    $pat_letter = $letters[random_int(0, count($letters) - 1)];
-    // patatine
-    if (!$orders->insert([
-        'orders_id' => $order_inserted_id,
-        'product_code' => 'PAT',
-        'letter' => $pat_letter,
-        'qty' => $packages,
-        'products_id' => 0
-    ])) {
-        header("Location: ../index.php?err=errAddProductBooking");
-        exit;
-    }
 
     // ciclo le bevande
+    $bev_arr = [];
     foreach ($_POST['items'] as $item) {
-        $bev_letter = $letters[random_int(0, count($letters) - 1)];
-
-        $new_order_detail = $orders->insert([
+        // creo un arraiy con gli id delle bevande
+        $bev_arr[] = $item['product_id'];
+        /*         $new_order_detail = $orders->insert([
             'orders_id' => $order_inserted_id,
             'product_code' => 'BEV',
             'letter' => $bev_letter,
             'qty' => 1,
             'products_id' => $item['product_id']
-        ]);
+            ]);
+            */
 
+        // recupero nome bevanda per la mail di riepilogo
         $prod_stmt = $products->findById($item['product_id']);
         $product_name = $prod_stmt['name'];
 
@@ -110,6 +101,17 @@ if ($operation == "add") {
         );
     }
 
+    $bev_str = implode(',',$bev_arr);
+    $bev_letter = $letters[random_int(0, count($letters) - 1)];
+    if (!$orders->insert([
+        'orders_id' => $order_inserted_id,
+        'product_code' => 'BEV',
+        'letter' => $bev_letter,
+        'products_id' => $bev_str
+    ])) {
+        header("Location: ../index.php?err=errAddProductBooking");
+        exit;
+    }
 
     $error = 0;
 
@@ -371,14 +373,14 @@ if ($operation == "add") {
     $order_number = filter_input(INPUT_POST, 'number');
     $order_check = $orders->findBy([
         'order_number' => $order_number
-        ]);
-        
-        
+    ]);
+
+
     $id = $order_check[0]['id'];
-    $code = filter_input(INPUT_POST,'product_code');
-    $letter = filter_input(INPUT_POST,'letter');
+    $code = filter_input(INPUT_POST, 'product_code');
+    $letter = filter_input(INPUT_POST, 'letter');
     $orders->table = "orders_details";
-    $prod_check= $orders->findBy([
+    $prod_check = $orders->findBy([
         'orders_id' => $id,
         'product_code' => $code,
         'letter' => $letter
@@ -389,7 +391,7 @@ if ($operation == "add") {
     if (count($prod_check) == 0) {
         $msg = 'err=noOrder';
     } else if ($prod_check[0]['used'] == 0) {
-        $msg = 'msg=orderToUse&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'].'&code='.$code.'&letter='.$letter.'';
+        $msg = 'msg=orderToUse&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'] . '&code=' . $code . '&letter=' . $letter . '';
     } else if ($prod_check[0]['used'] == 1) {
         $msg = 'err=orderUsed&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
     }
@@ -434,10 +436,10 @@ if ($operation == "add") {
         $qty = $order_paid['qty'];
 
         $orders->table = 'orders_details';
-        $sal_products = $orders->findBy(['orders_id' => $id,'product_code'=>'SAL']);
+        $sal_products = $orders->findBy(['orders_id' => $id, 'product_code' => 'SAL']);
 
-        $pat_products = $orders->findBy(['orders_id' => $id,'product_code'=>'PAT']);
-        $bev_products = $orders->findBy(['orders_id' => $id,'product_code'=>'BEV']);
+        $pat_products = $orders->findBy(['orders_id' => $id, 'product_code' => 'PAT']);
+        $bev_products = $orders->findBy(['orders_id' => $id, 'product_code' => 'BEV']);
 
         ////////////////////////////////////////////////
         ///    INVIO MAIL DI CONFERMA PAGAMENTO
@@ -471,8 +473,8 @@ if ($operation == "add") {
                     Dati prenotazione <u>' . $order_number . '</u>
                     </h2>
                     <ul>
-                    <li style="margin:1em auto;">'.$qty.' piatti salsiccia -> cod. <strong>SAL-'.$order_number.$sal_products[0]['letter'].'</strong></li>
-                    <li style="margin:1em auto;">'.$qty.' piatti patatine -> cod. <strong>PAT-'.$order_number.$pat_products[0]['letter'].'</strong></li>';
+                    <li style="margin:1em auto;">' . $qty . ' piatti salsiccia -> cod. <strong>SAL-' . $order_number . $sal_products[0]['letter'] . '</strong></li>
+                    <li style="margin:1em auto;">' . $qty . ' piatti patatine -> cod. <strong>PAT-' . $order_number . $pat_products[0]['letter'] . '</strong></li>';
         foreach ($bev_products as $list_item) {
 
             $product_data = $products->findById($list_item['products_id']);
