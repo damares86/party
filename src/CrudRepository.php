@@ -132,6 +132,44 @@ abstract class CrudRepository
             ->execute($data);
     }
 
+    public function updateByConditions(
+        array $conditions,
+        array $data
+    ): bool {
+        $where = [];
+
+        foreach ($conditions as $column => $value) {
+            $where[] = "`{$column}` = :where_{$column}";
+        }
+
+        $set = [];
+
+        foreach ($data as $column => $value) {
+            $set[] = "`{$column}` = :set_{$column}";
+        }
+
+        $params = [];
+
+        foreach ($conditions as $column => $value) {
+            $params["where_{$column}"] = $value;
+        }
+
+        foreach ($data as $column => $value) {
+            $params["set_{$column}"] = $value;
+        }
+
+        $sql = sprintf(
+            "UPDATE `%s` SET %s WHERE %s",
+            $this->table,
+            implode(', ', $set),
+            implode(' AND ', $where)
+        );
+
+        return $this->db
+            ->prepare($sql)
+            ->execute($params);
+    }
+
     public function delete(int|string $id): bool
     {
         return $this->db

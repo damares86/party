@@ -1,6 +1,15 @@
 <?php
 
 require 'inc/header.php';
+require_once '../vendor/autoload.php';
+
+use App\PlaceRepository;
+use App\OrderRepository;
+
+$orders = new OrderRepository();
+
+$place = new PlaceRepository();
+$place_list = $place->findAll();
 
 ?>
 
@@ -14,6 +23,10 @@ require 'inc/header.php';
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
+                <?php
+                require "inc/alert.php";
+                ?>
+
                 <h2 class="pb-2 border-bottom">Dashboard</h2>
                 <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
                     <div class="feature col">
@@ -41,8 +54,50 @@ require 'inc/header.php';
                         </a>
                     </div>
                 </div>
+                <div class="row">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width:10%">Ambiente</th>
+                                <th style="width:30%">Prenotazioni</th>
+                                <th style="width:30%">Soldi da raccogliere / totali</th>
+                            </tr>
+                        </thead>
+                        <?php
+                        foreach ($place_list as $p) {
+                            // conto gli ordini per ambiente
+                            $place_id = $p['id'];
+                            $place_order = $orders->findBy(['place_id' => $place_id]);
+                            $place_order_count = count($place_order);
+                            $place_order_bill_total = 0;
+                            $place_order_bill_paid = 0;
+                            foreach ($place_order as $item) {
+                                $place_order_bill_total += $item['bill'];
+                                if ($item['paid'] == 1) {
+                                    $place_order_bill_paid += $item['bill'];
+                                }
+                            }
+                            $color_paid = 'danger';
+                            if ($place_order_bill_paid == $place_order_bill_total && $place_order_bill_total != 0) {
+                                $color_paid = 'success';
+                            }
+
+                        ?>
+                            <tr>
+                                <td><?= $p['name'] ?></td>
+                                <td><?= $place_order_count ?></td>
+                                <td><span class="text-<?= $color_paid ?>"><?= $place_order_bill_paid ?> € / <?= $place_order_bill_total ?> €</span></td>
+
+                            </tr>
+                        <?php
+                        }
+                        ?>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
         </div>
     </main>
 

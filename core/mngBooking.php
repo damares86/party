@@ -101,7 +101,7 @@ if ($operation == "add") {
         );
     }
 
-    $bev_str = implode(',',$bev_arr);
+    $bev_str = implode(',', $bev_arr);
     $bev_letter = $letters[random_int(0, count($letters) - 1)];
     if (!$orders->insert([
         'orders_id' => $order_inserted_id,
@@ -157,7 +157,7 @@ if ($operation == "add") {
             </body>
         </html>
         ';
-        
+
     if (!mail($email, $subject, $output, $headers)) {
         $error++;
     }
@@ -171,175 +171,161 @@ if ($operation == "add") {
     }
 } else if ($operation == "edit") {
 
-    $idToMod = filter_input(INPUT_POST, 'idToMod', FILTER_VALIDATE_INT);
+    $idToMod = filter_input(
+        INPUT_POST,
+        'idToMod',
+        FILTER_VALIDATE_INT
+    );
 
     if (!$idToMod) {
         die('ID ordine non valido');
     }
 
+
+    /*
+ * Recuperiamo gli items
+ */
     $items = $_POST['items'] ?? [];
+
+    if (empty($items)) {
+        die('L\'ordine deve contenere almeno un pacchetto');
+    }
+
+
+    /*
+ * Dati ordine
+ */
+    $email = filter_input(
+        INPUT_POST,
+        'email',
+        FILTER_VALIDATE_EMAIL
+    );
+
+    $placeId = filter_input(
+        INPUT_POST,
+        'place',
+        FILTER_VALIDATE_INT
+    );
+
+    $paid = isset($_POST['paid']) ? 1 : 0;
+
+
+    /*
+ * Dati pacchetti
+ */
+
+    // Numero di pacchetti
+    $qty = count($items);
+
+    // Prezzo fisso del pacchetto
+    $packagePrice = 5;
+
+    // Totale ordine
+    $bill = $qty * $packagePrice;
+
+
+    /*
+ * Recuperiamo gli ID delle bevande
+ *
+ * Esempio:
+ *
+ * [
+ *     2,
+ *     8,
+ *     2,
+ *     8
+ * ]
+ *
+ * diventa:
+ *
+ * "2,8,2,8"
+ */
+    $productsIds = array_column($items, 'product_id');
+
+    $productsString = implode(',', $productsIds);
+
 
     $orders = new OrderRepository();
 
-    // La tabella dei dettagli
-    $orders->table = 'orders_details';
 
     try {
 
-        // Inizio transazione
+        /*
+     * Inizio transazione
+     */
         $orders->beginTransaction();
 
-        /*
-     * 1. Recuperiamo i dettagli attualmente presenti
-     *    per questo ordine
-     */
-        $existingDetails = $orders->findBy([
-            'orders_id' => $idToMod
-        ]);
 
         /*
-     * Creiamo un array con gli ID presenti nel POST.
+     * ==========================================
+     * ORDERS_DETAILS - PIA
+     * ==========================================
      *
-     * Nel tuo esempio:
-     *
-     * 51
-     * 52
-     * nuovo -> nessun ID
+     * Aggiorniamo il numero di pacchetti.
      */
-        $postedDetailIds = [];
+        $orders->table = 'orders_details';
 
-        foreach ($items as $item) {
-
-            if (!empty($item['detail_id'])) {
-                $postedDetailIds[] = (int)$item['detail_id'];
-            }
-        }
+        $orders->updateByConditions(
+            [
+                'orders_id' => $idToMod,
+                'product_code' => 'PIA'
+            ],
+            [
+                'qty' => $qty
+            ]
+        );
 
 
         /*
-     * 2. ELIMINAZIONI
+     * ==========================================
+     * ORDERS_DETAILS - BEV
+     * ==========================================
      *
-     * Se un dettaglio esiste nel DB ma il suo ID
-     * non è più presente nel POST, significa che
-     * l'utente lo ha eliminato.
+     * Aggiorniamo la lista delle bevande.
      */
-        foreach ($existingDetails as $detail) {
-
-            $detailId = (int)$detail['id'];
-
-            if (!in_array($detailId, $postedDetailIds, true)) {
-
-                $orders->delete($detailId);
-            }
-        }
+        $orders->updateByConditions(
+            [
+                'orders_id' => $idToMod,
+                'product_code' => 'BEV'
+            ],
+            [
+                'products_id' => $productsString
+            ]
+        );
 
 
         /*
-     * 3. INSERT / UPDATE
-     */
-        foreach ($items as $item) {
-
-            $productId = filter_var(
-                $item['product_id'] ?? null,
-                FILTER_VALIDATE_INT
-            );
-
-            if (!$productId) {
-                throw new RuntimeException(
-                    'Prodotto non valido'
-                );
-            }
-
-
-            /*
-         * DETAIL ID PRESENTE
-         *
-         * È un record già esistente → UPDATE
-         */
-            if (!empty($item['detail_id'])) {
-
-                $detailId = (int)$item['detail_id'];
-
-                $orders->update($detailId, [
-                    'products_id' => $productId
-                ]);
-            } else {
-
-                /*
-             * DETAIL ID ASSENTE
-             *
-             * È una nuova riga → INSERT
-             */
-                $orders->insert([
-                    'orders_id' => $idToMod,
-                    'products_id' => $productId
-                ]);
-            }
-        }
-
-
-        /*
-     * 4. Aggiornamento dell'ordine principale
+     * ==========================================
+     * ORDERS
+     * ==========================================
      *
-     * Qui puoi aggiornare email, ambiente, ecc.
+     * Aggiorniamo i dati principali dell'ordine.
      */
-
         $orders->table = 'orders';
 
-        $email = filter_input(
-            INPUT_POST,
-            'email',
-            FILTER_VALIDATE_EMAIL
+        $orders->update(
+            $idToMod,
+            [
+                'email' => $email,
+                'place_id' => $placeId,
+                'qty' => $qty,
+                'bill' => $bill,
+                'paid' => $paid
+            ]
         );
 
-        $placeId = filter_input(
-            INPUT_POST,
-            'place',
-            FILTER_VALIDATE_INT
-        );
-
-        $orders->update($idToMod, [
-            'email' => $email,
-            'place_id' => $placeId
-        ]);
-        // Aggiorna l'ordine principale
-        $orders->table = 'orders';
-
-        $email = filter_input(
-            INPUT_POST,
-            'email',
-            FILTER_VALIDATE_EMAIL
-        );
-
-        $placeId = filter_input(
-            INPUT_POST,
-            'place',
-            FILTER_VALIDATE_INT
-        );
-
-        // Ogni pacchetto costa 5 €
-        $packagePrice = 5;
-
-        // Il numero di pacchetti corrisponde al numero
-        // di elementi presenti nel POST
-        $bill = count($items) * $packagePrice;
-
-        $paid = $_POST['paid'] ? 1 : 0;
-
-        $orders->update($idToMod, [
-            'email'    => $email,
-            'place_id' => $placeId,
-            'bill'     => $bill,
-            'paid' => $paid
-        ]);
 
         /*
-     * Se arriviamo qui senza errori,
-     * confermiamo tutte le modifiche.
+     * ==========================================
+     * CONFERMA
+     * ==========================================
      */
         $orders->commit();
 
 
+        /*
+     * Redirect
+     */
         header(
             'Location: ../admin/allBooking.php?msg=bookingEditOk'
         );
@@ -347,13 +333,13 @@ if ($operation == "add") {
         exit;
     } catch (Throwable $e) {
 
-        /*
-     * Qualsiasi errore annulla TUTTE le modifiche.
-     */
         $orders->rollBack();
 
-        die('Errore durante la modifica dell\'ordine: '
-            . $e->getMessage());
+        header(
+            'Location: ../admin/allBooking.php?err=bookingEditFail'
+        );
+
+        exit;
     }
 } else if ($operation == "book") {
 
@@ -474,9 +460,9 @@ if ($operation == "add") {
                     <li style="margin:1em auto;">' . $qty . ' piatti  -> cod. <strong>PIA-' . $order_number . $pia_products[0]['letter'] . '</strong></li>
                     <li style="margin:1em auto;">' . $qty . ' bibite -> cod. <strong>BEV-' . $order_number . $bev_products[0]['letter'] . '</strong></li>
                     <ul>';
-                    $bev_arr = explode(',',$bev_products[0]['products_id']);
+        $bev_arr = explode(',', $bev_products[0]['products_id']);
         foreach ($bev_arr as $list_item) {
-            
+
             $product_data = $products->findById($list_item);
 
             $output .= '    <li style="margin:1em auto;">1 ' . $product_data['name'] . '</strong></li>';
@@ -490,7 +476,7 @@ if ($operation == "add") {
             </body>
         </html>
         ';
-        
+
         if (!mail($email, $subject, $output, $headers)) {
             $error++;
         }

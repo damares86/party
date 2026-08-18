@@ -22,6 +22,10 @@ $list = $products->findAll();
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
+                <?php
+                require "inc/alert.php";
+                ?>
+
                 <h2 class="pb-2 border-bottom">Aggiungi tipo di bevanda</h2>
                 <form action="../core/mngProducts.php" method="POST">
                     <div class="col-12 my-2">
@@ -34,7 +38,7 @@ $list = $products->findAll();
                         </div>
 
                         <input type="hidden" name="operation" value="add">
-                    <button class="w-100 btn invia btn-lg text-white" type="submit">Invia</button>
+                        <button class="w-100 btn invia btn-lg text-white" type="submit">Invia</button>
                     </div>
 
                 </form>

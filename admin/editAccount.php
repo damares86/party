@@ -22,6 +22,10 @@ $account = $accounts->findById($id);
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
+                <?php
+                require "inc/alert.php";
+                ?>
+
                 <h2 class="pb-2 border-bottom">Modifica utente</h2>
                 <form action="../core/mngAccounts.php" method="POST">
                     <div class="col-12 my-2">

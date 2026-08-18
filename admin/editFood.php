@@ -22,6 +22,10 @@ $prod = $products->findById($id);
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
+                <?php
+                require "inc/alert.php";
+                ?>
+
                 <h2 class="pb-2 border-bottom">Modifica tipo di bevanda</h2>
                 <form action="../core/mngProducts.php" method="POST">
                     <div class="col-12 my-2">

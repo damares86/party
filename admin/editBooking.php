@@ -22,7 +22,9 @@ $idToMod = filter_input(INPUT_GET, 'id');
 $orderToMod = $orders->findById($idToMod);
 
 $orders->table = 'orders_details';
-$order_products = $orders->findBy(['orders_id' => $idToMod]);
+$order_bev = $orders->findBy(['orders_id' => $idToMod, 'product_code' => 'BEV']);
+$bev_arr = explode(',', $order_bev[0]['products_id']);
+
 ?>
 
 <body>
@@ -31,10 +33,16 @@ $order_products = $orders->findBy(['orders_id' => $idToMod]);
 
         <?php
         require 'inc/navbar.php';
+
         ?>
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
+                
+                <?php
+                require "inc/alert.php";
+                ?>
+
                 <h2 class="pb-2 border-bottom">Modifica prenotazione numero: <u><?= $orderToMod['order_number'] ?></u></h2>
 
                 <form action="../core/mngBooking.php" method="POST">
@@ -75,7 +83,7 @@ $order_products = $orders->findBy(['orders_id' => $idToMod]);
                         <div id="orderContainer">
                             <?php
                             $i = 0;
-                            foreach ($order_products as $ord) {
+                            foreach ($bev_arr as $ord) {
 
                             ?>
                                 <div class="row mb-3 order-row">
@@ -83,7 +91,7 @@ $order_products = $orders->findBy(['orders_id' => $idToMod]);
                                     <input
                                         type="hidden"
                                         name="items[<?= $i ?>][detail_id]"
-                                        value="<?= $ord['id'] ?>">
+                                        value="<?= $ord ?>">
 
                                     <div class="col-4 pt-4">
                                         <p class="product-price">1 pacchetto</p>
@@ -95,7 +103,7 @@ $order_products = $orders->findBy(['orders_id' => $idToMod]);
                                             <?php
                                             $selected = '';
                                             foreach ($list as $item) {
-                                                if ($ord['products_id'] == $item['id']) {
+                                                if ($ord == $item['id']) {
                                                     $selected = 'selected';
                                                 }
                                             ?>
@@ -135,10 +143,10 @@ $order_products = $orders->findBy(['orders_id' => $idToMod]);
                         <div class="form-check form-switch">
                             <label class="form-check-label" for="flexSwitchCheckDefault">Pagato</label>
                             <?php
-                                $checked = '' ;
-                                if($orderToMod['paid'] == 1){
-                                    $checked = 'checked';
-                                }
+                            $checked = '';
+                            if ($orderToMod['paid'] == 1) {
+                                $checked = 'checked';
+                            }
                             ?>
                             <input class="form-check-input" type="checkbox" role="switch" name="paid" id="flexSwitchCheckDefault" <?= $checked ?>>
                         </div>
@@ -158,7 +166,7 @@ $order_products = $orders->findBy(['orders_id' => $idToMod]);
 
         const PACKAGE_PRICE = 5;
 
-        let index = <?= count($order_products) ?>;
+        let index = <?= count($bev_arr) ?>;
 
 
         // ============================

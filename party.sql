@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Ago 18, 2026 alle 11:56
+-- Creato il: Ago 18, 2026 alle 15:12
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -63,7 +63,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `email`, `place_id`, `order_number`, `qty`, `bill`, `paid`) VALUES
-(42, 'economo@agnelli.it', 9, 2, 3, 15.00, 1);
+(42, 'economo@agnelli.it', 9, 2, 3, 15.00, 1),
+(44, 'economo@agnelli.it', 9, 3, 3, 15.00, 1);
 
 -- --------------------------------------------------------
 
@@ -76,8 +77,8 @@ CREATE TABLE `orders_details` (
   `orders_id` int(5) NOT NULL,
   `product_code` varchar(255) NOT NULL,
   `letter` varchar(1) NOT NULL,
-  `qty` int(5) NOT NULL,
-  `products_id` int(5) NOT NULL,
+  `qty` int(5) NOT NULL DEFAULT 0,
+  `products_id` varchar(255) NOT NULL,
   `used` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -86,11 +87,8 @@ CREATE TABLE `orders_details` (
 --
 
 INSERT INTO `orders_details` (`id`, `orders_id`, `product_code`, `letter`, `qty`, `products_id`, `used`) VALUES
-(6, 42, 'SAL', 'C', 3, 0, 1),
-(7, 42, 'PAT', 'B', 3, 0, 0),
-(8, 42, 'BEV', 'Y', 1, 1, 1),
-(9, 42, 'BEV', 'T', 1, 2, 0),
-(10, 42, 'BEV', 'L', 1, 6, 0);
+(13, 44, 'PIA', 'J', 3, '0', 1),
+(14, 44, 'BEV', 'N', 0, '2,8,2', 1);
 
 -- --------------------------------------------------------
 
@@ -188,13 +186,13 @@ ALTER TABLE `accounts`
 -- AUTO_INCREMENT per la tabella `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT per la tabella `orders_details`
 --
 ALTER TABLE `orders_details`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT per la tabella `place`
