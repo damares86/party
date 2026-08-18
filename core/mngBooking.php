@@ -131,7 +131,7 @@ if ($operation == "add") {
             </head>
             <body style="font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;padding:30px;">
 
-                <div style="max-width:700px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
+                <div style="max-width:100%;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
                     <h2 style="text-align:center">Partynsieme - Agnelli</h2>
                     <h3 style="background-color:#ff0000;color:#fff;">ATTENZIONE: la prenotazione non sarà valida fino a quando non verrà saldato l\'importo. <u>Non sarà possibile pagare la sera stessa</u>, l\'importo dovrà essere saldato nei giorni precedenti.<br>
                     Per pagare sarà necessario comunicare la <strong>mail usata per la prenotazione e il numero d\'ordine</strong>.
@@ -434,10 +434,13 @@ if ($operation == "add") {
         $order_paid = $orders->findById($id);
         $order_number = $order_paid['order_number'];
         $email = $order_paid['email'];
+        $qty = $order_paid['qty'];
 
         $orders->table = 'orders_details';
-        $order_products = $orders->findBy(['orders_id' => $id]);
+        $sal_products = $orders->findBy(['orders_id' => $id,'product_code'=>'SAL']);
 
+        $pat_products = $orders->findBy(['orders_id' => $id,'product_code'=>'PAT']);
+        $bev_products = $orders->findBy(['orders_id' => $id,'product_code'=>'BEV']);
 
         ////////////////////////////////////////////////
         ///    INVIO MAIL DI CONFERMA PAGAMENTO
@@ -463,19 +466,21 @@ if ($operation == "add") {
             </head>
             <body style="font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;padding:30px;">
 
-                <div style="max-width:700px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
+                <div style="max-width:100%;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
                     <h2 style="text-align:center">Partynsieme - Agnelli</h2>
                     <h3 style="background-color:#00ff00;color:#000; padding:0.5em;">Prenotazione pagata</h3>
                     
                     <h2 style="margin-top:0;">
                     Dati prenotazione <u>' . $order_number . '</u>
                     </h2>
-                    <ul>';
-        foreach ($order_products as $list_item) {
+                    <ul>
+                    <li style="margin:1em auto;">'.$qty.' piatti salsiccia -> cod. <strong>SAL-'.$order_number.$sal_products[0]['letter'].'</strong></li>
+                    <li style="margin:1em auto;">'.$qty.' piatti patatine -> cod. <strong>PAT-'.$order_number.$pat_products[0]['letter'].'</strong></li>';
+        foreach ($bev_products as $list_item) {
 
             $product_data = $products->findById($list_item['products_id']);
 
-            $output .= '    <li style="margin:1em auto;">' . $list_item['qty'] . 'x ' . $product_data['name'] . ' -> cod. <strong>' . $product_data['code'] . '-' . $order_number . $list_item['product_letter'] . '</strong></li>';
+            $output .= '    <li style="margin:1em auto;">1 ' . $product_data['name'] . ' -> cod. <strong>BEV-' . $order_number . $list_item['letter'] . '</strong></li>';
         }
 
         $output .= '    </ul>
@@ -485,6 +490,8 @@ if ($operation == "add") {
             </body>
         </html>
         ';
+        print_r($output);
+        exit;
 
         if (!mail($email, $subject, $output, $headers)) {
             $error++;
