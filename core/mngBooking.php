@@ -378,22 +378,30 @@ if ($operation == "add") {
         exit;
     }
 } else if ($operation == "check") {
-    // ricerca prenotazione da pagare
-
-    $email = filter_input(INPUT_POST, 'email');
+    // controllo prenotazione da usare
     $order_number = filter_input(INPUT_POST, 'number');
     $order_check = $orders->findBy([
-        'order_number' => $order_number,
-        'email' => $email
+        'order_number' => $order_number
+        ]);
+        
+        
+    $id = $order_check[0]['id'];
+    $code = filter_input(INPUT_POST,'product_code');
+    $letter = filter_input(INPUT_POST,'letter');
+    $orders->table = "orders_details";
+    $prod_check= $orders->findBy([
+        'orders_id' => $id,
+        'product_code' => $code,
+        'letter' => $letter
     ]);
 
     $msg = '';
 
-    if (count($order_check) == 0) {
-        $msg = 'msg=noOrder';
-    } else if ($order_check[0]['used'] == 0) {
-        $msg = 'msg=orderToUse&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
-    } else if ($order_check[0]['used'] == 1) {
+    if (count($prod_check) == 0) {
+        $msg = 'err=noOrder';
+    } else if ($prod_check[0]['used'] == 0) {
+        $msg = 'msg=orderToUse&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'].'&code='.$code.'&letter='.$letter.'';
+    } else if ($prod_check[0]['used'] == 1) {
         $msg = 'err=orderUsed&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
     }
 
@@ -490,8 +498,6 @@ if ($operation == "add") {
             </body>
         </html>
         ';
-        print_r($output);
-        exit;
 
         if (!mail($email, $subject, $output, $headers)) {
             $error++;

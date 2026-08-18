@@ -16,20 +16,27 @@ $products = new ProductRepository();
 $orders = new OrderRepository();
 $list = $products->findAll();
 $msg = '';
-$order_number = '' ;
-$email = '' ;
+$order_number = '';
+$email = '';
 if ($_GET) {
 
-    $email =filter_input(INPUT_GET, 'email');
+    $email = filter_input(INPUT_GET, 'email');
     $order_number = filter_input(INPUT_GET, 'order_number');
     $msg = filter_input(INPUT_GET, 'msg');
 }
 $button = $msg == 'orderToUse' ? 'Conferma utilizzo' : 'Cerca';
 $operation = $msg == 'orderToUse' ? 'book' : 'check';
-
+$order = NULL;
 if (filter_input(INPUT_GET, 'id')) {
     $id = filter_input(INPUT_GET, 'id');
-    $order = $orders->findById($id);
+    $code = filter_input(INPUT_GET, 'code');
+    $letter = filter_input(INPUT_GET, 'letter');
+    $orders->table = 'orders_details';
+    $order = $orders->findBy([
+        'orders_id' => $id,
+        'product_code' => $code,
+        'letter' => $letter
+    ]);
 }
 
 $pagename = 'index';
@@ -43,20 +50,22 @@ $pagename = 'index';
             <h1 class="mb-3 ">Partyinsieme</h1>
             <?php
             require 'inc/navbar.php';
-            
+
             require "inc/alert.php";
             ?>
-            <h5>Cerca prenotazione</h5>
-            <div class="col-12 my-5">
-                <div class="row">
-                    <?php
-                    if ($msg == 'orderToUse') {
-                    ?>
-                        <a href="manage.php"><b><-- Cerca un altra prenotazione</b></a>
+            <?php
+            $search = 'Cerca';
+            if ($msg == 'orderToUse') {
+                $search = 'Conferma';
+            ?>
+                <span class="mb-5"><a href="manage.php"><b><-- Cerca un altra prenotazione</b></a></span>
 
-                    <?php
-                    }
-                    ?>
+            <?php
+            }
+            ?>
+            <h5 class="mt-3"><?= $search ?> prenotazione</h5>
+            <div class="col-12 my-3">
+                <div class="row">
                     <?php
                     if ($msg == 'usedSucc') {
                     ?>
@@ -68,81 +77,97 @@ $pagename = 'index';
                         </div>
                     <?php
                     }
-                    ?>
-                    <div class="col-12 mb-4">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" name="email" placeholder="mail@mail.it" required value="<?= $email ?>">
-                        <div class="invalid-feedback">
-                            Inserire una email valida
-                        </div>
-                    </div>
 
-                    <div class="col-12 mb-4">
-                        <label for="code" class="form-label">Numero ordine</label>
-                        <input type="number" class="form-control" name="number" placeholder="00000" required value="<?= $order_number ?>">
-                    </div>
+                    if ($msg != 'orderToUse') {
+                    ?>
+
+                        <div class="col-md-4">
+                            <label for="address" class="form-label">Codice</label>
+                            <select class="form-select mb-3" name="product_code" required>
+                                <option value="">---</option>
+                                <option value="SAL">SAL</option>
+                                <option value="PAT">PAT</option>
+                                <option value="BEV">BEV</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="code" class="form-label">Numero</label>
+                            <input type="number" class="form-control" name="number" placeholder="00000" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="address" class="form-label">Lettera</label>
+                            <select class="form-select mb-3" name="letter" required>
+                                <option value="">---</option>
+                                <?php
+                                $alfabeto = range('A', 'Z');
+                                foreach ($alfabeto as $letter) {
+                                ?>
+                                    <option value="<?= $letter ?>"><?= $letter ?></option>
+                                <?php
+                                }
+                                ?>
+                            </select>
+                        </div>
                     <?php
+                    }
                     if ($msg == 'orderToUse') {
                     ?>
-                        <div class="col-4 mb-3 border">
-                            Pacchetto
+                        <div class="col-8 border">
+                            Prodotto
                         </div>
-                        <div class="col-8 mb-3 border">
-                            Bevanda
+                        <div class="col-4 border">
+                            Quantità
                         </div>
-                        <?php
-                        $orders->table = 'orders_details';
-                        $order_products = $orders->findBy(['orders_id' => $id]);
-
-                        $i = 0;
-                        foreach ($order_products as $ord) {
-
-                        ?>
+                        <div class="col-12">
                             <div class="row mb-3 order-row border-bottom">
 
-                                <input
-                                    type="hidden"
-                                    name="items[<?= $i ?>][detail_id]"
-                                    value="<?= $ord['id'] ?>">
+                                <input type="hidden" name="idToUse" value="<?= $order[0]['id'] ?>">
+                                <?php
+                                    $prod = '' ;
+                                    if($order[0]['product_code'] == "SAL"){
+                                        $prod = 'Salsiccia';
+                                    }else if($order[0]['product_code'] == "PAT"){
+                                        $prod = "Patatine" ;
+                                    }else{
 
-                                <div class="col-4">
-                                    <p class="product-price">1 pacchetto</p>
-                                </div>
-                                <div class="col-8">
-
-                                    <?php
-                                    $name = '';
-                                    foreach ($list as $item) {
-                                        if ($ord['products_id'] == $item['id']) {
-                                            $name = htmlspecialchars($item['name']);
-                                            break;
-                                        }
                                     }
-                                    ?>
+                                ?>
+                                <div class="col-8 py-3 border">
+                                    <p class="product-price"><b><?= $prod ?></b></p>
+                                </div>
+                                <div class="col-4 py-3 border">
+
                                     <b>
-                                        <?= $name ?>
+                                        <?= $order[0]['qty'] ?>
                                     </b>
 
                                 </div>
 
                             </div>
+                        </div>
                     <?php
-                            $i++;
-                        }
                     }
+
                     ?>
 
 
                     <input type="hidden" name="operation" value="<?= $operation ?>">
+                    <?php
+                    if ($order) {
+                    ?>
+                        <input type="hidden" name="order_number" value="<?= $order[0]['id'] ?>">
+                    <?php
+                    }
+                    ?>
 
-                    <button class="w-100 btn btn-lg text-white" type="submit"><?= $button ?></button>
+                    <button class="mt-3 w-100 btn btn-lg text-white" type="submit"><?= $button ?></button>
                 </div>
             </div>
             </div>
         </form>
-    <?php
-    require 'inc/footer.php';
-    ?>
+        <?php
+        require 'inc/footer.php';
+        ?>
     </main>
 
 
