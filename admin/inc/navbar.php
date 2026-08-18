@@ -20,6 +20,9 @@
                     <a class="nav-link" href="allFood.php">Tipi di bevande</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="allPlaces.php">Ambienti</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="../core/logout.php">Logout</a>
                 </li>
 
