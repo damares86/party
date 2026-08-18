@@ -356,21 +356,10 @@ if ($operation == "add") {
     }
 } else if ($operation == "book") {
 
-    $order_number = filter_input(INPUT_POST, 'number');
-    $order_to_check = $orders->findBy(['order_number' => $order_number]);
+    $order_id = filter_input(INPUT_POST, 'idToUse');
+    $orders->table = "orders_details";
 
-    if ($order_to_check[0]['paid'] == 0) {
-        header("Location: ../index.php?err=noPaid");
-        exit;
-    }
-
-    if ($order_to_check[0]['used'] == 1) {
-        header("Location: ../index.php?err=used");
-        exit;
-    }
-
-    $id = $order_to_check[0]['id'];
-    if ($orders->update($id, ['used' => 1])) {
+    if ($orders->update($order_id, ['used' => 1])) {
         header("Location: ../manage.php?msg=bookSucc");
         exit;
     } else {

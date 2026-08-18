@@ -129,7 +129,9 @@ $pagename = 'index';
                                     }else if($order[0]['product_code'] == "PAT"){
                                         $prod = "Patatine" ;
                                     }else{
-
+                                        $prod_id = $order[0]['products_id'];
+                                        $drink = $products->findById($prod_id);
+                                        $prod = $drink['name'];
                                     }
                                 ?>
                                 <div class="col-8 py-3 border">
@@ -152,13 +154,6 @@ $pagename = 'index';
 
 
                     <input type="hidden" name="operation" value="<?= $operation ?>">
-                    <?php
-                    if ($order) {
-                    ?>
-                        <input type="hidden" name="order_number" value="<?= $order[0]['id'] ?>">
-                    <?php
-                    }
-                    ?>
 
                     <button class="mt-3 w-100 btn btn-lg text-white" type="submit"><?= $button ?></button>
                 </div>
