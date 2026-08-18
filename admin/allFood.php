@@ -21,16 +21,18 @@ $list = $products->findAll();
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
-                <h2 class="pb-2 border-bottom">Tipi di cibo</h2>
+                <?php
+                require "inc/alert.php";
+                ?>
 
-                <a href="addFood.php" class="btn btn-success my-3">+ Aggiungi cibo</a>
+                <h2 class="pb-2 border-bottom">Tipi di bevanda</h2>
+
+                <a href="addFood.php" class="btn btn-success my-3">+ Aggiungi bevanda</a>
 
                 <table id="table" class="table table-striped">
                     <thead>
                         <tr>
-                            <th style="width:30%">Tipo di cibo</th>
-                            <th style="width:20%">Codice</th>
-                            <th style="width:20%">Prezzo</th>
+                            <th style="width:30%">Tipo di bevanda</th>
                             <th style="width:40%">Azioni</th>
                         </tr>
                     </thead>
@@ -41,8 +43,6 @@ $list = $products->findAll();
                         ?>
                             <tr>
                                 <td><?= $item['name'] ?></td>
-                                <td><?= $item['code'] ?></td>
-                                <td><?= $item['price'] ?> €</td>
                                 <td>
                                     <a href="editFood.php?id=<?= $item['id'] ?>" class="btn btn-warning">Modifica</a>
                                     <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#danger<?= $item['id'] ?>">Elimina

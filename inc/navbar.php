@@ -3,9 +3,9 @@
 $active_index = '';
 $active_payment = '';
 $active_booking = '';
-$link_index = 'index.php';
+$link_index = 'manage.php';
 $link_payment = 'payment.php';
-$link_booking = 'booking.php';
+$link_booking = 'index.php';
 
 if ($pagename == 'index') {
     $active_index = 'active';
@@ -23,9 +23,19 @@ if ($pagename == 'index') {
 <div class="container">
     <header class="d-flex justify-content-center py-3">
         <ul class="nav nav-pills">
-            <li class="nav-item"><a href="<?= $link_index ?>" class="nav-link <?= $active_index ?>">Cassa</a></li>
-            <li class="nav-item"><a href="<?= $link_payment ?>" class="nav-link <?= $active_payment ?>">Pagamento</a></li>
-            <li class="nav-item"><a href="<?= $link_booking ?>" class="nav-link <?= $active_booking ?>">Prenota</a></li>
+            <?php
+            if ($_SESSION['id'] != 2) {
+            ?>
+                <li class="nav-item"><a href="<?= $link_index ?>" class="nav-link <?= $active_index ?>">Cassa serata</a></li>
+            <?php
+            }
+            if ($_SESSION['id'] <= 2) {
+            ?>
+                <li class="nav-item"><a href="<?= $link_payment ?>" class="nav-link <?= $active_payment ?>">Pagamento</a></li>
+                <li class="nav-item"><a href="<?= $link_booking ?>" class="nav-link <?= $active_booking ?>">Prenota</a></li>
+            <?php
+            }
+            ?>
         </ul>
     </header>
 </div>

@@ -26,3 +26,7 @@ main{
 .navbar {
   margin-bottom: 20px;
 }
+
+img.footer{
+    height:auto;
+}

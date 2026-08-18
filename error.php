@@ -13,7 +13,7 @@ require 'inc/header.php';
         <h1 class="mb-3 ">Partynsieme</h1>
 
         <h5>Spiacente, non sei autorizzato a visualizzare questa pagina.</h5>
-        <p>Se devi prenotare la cena, vai <a href="booking.php">in questa pagina</a>.<br><br>
+        <p>Se devi prenotare la cena, vai <a href="index.php">in questa pagina</a>.<br><br>
         Se sei un admin vai alla <a href="login.php">pagina di login</a>.</p>
 
     </main>

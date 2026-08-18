@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Ago 11, 2026 alle 11:08
+-- Creato il: Ago 18, 2026 alle 15:12
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -38,7 +38,9 @@ CREATE TABLE `accounts` (
 --
 
 INSERT INTO `accounts` (`id`, `username`, `password`) VALUES
-(2, 'damares86', '$2y$10$h2Xug/pqhbLKZ6w2uPlC3OnEmm1qcddEXgAjEIpvNuOwKT7Es.8JS');
+(1, 'damares86', '$2y$10$h2Xug/pqhbLKZ6w2uPlC3OnEmm1qcddEXgAjEIpvNuOwKT7Es.8JS'),
+(2, 'pagamento', '$2y$10$SHMkS2pKwAUra7L1Wehr8OSegiUOdXhTS8DX6udwdIV4D0si8JZgi'),
+(5, 'cassa', '$2y$10$LL982FJnlCFDkuHcr6HHduOYtlpQUYJAQVcjX.cDseh5l2b99SpJ6');
 
 -- --------------------------------------------------------
 
@@ -51,6 +53,7 @@ CREATE TABLE `orders` (
   `email` varchar(255) NOT NULL,
   `place_id` int(5) DEFAULT NULL,
   `order_number` int(10) NOT NULL,
+  `qty` int(5) NOT NULL,
   `bill` decimal(6,2) DEFAULT NULL,
   `paid` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -59,8 +62,9 @@ CREATE TABLE `orders` (
 -- Dump dei dati per la tabella `orders`
 --
 
-INSERT INTO `orders` (`id`, `email`, `place_id`, `order_number`, `bill`, `paid`) VALUES
-(37, 'economo@agnelli.it', 9, 2, 8.00, 0);
+INSERT INTO `orders` (`id`, `email`, `place_id`, `order_number`, `qty`, `bill`, `paid`) VALUES
+(42, 'economo@agnelli.it', 9, 2, 3, 15.00, 1),
+(44, 'economo@agnelli.it', 9, 3, 3, 15.00, 1);
 
 -- --------------------------------------------------------
 
@@ -71,9 +75,10 @@ INSERT INTO `orders` (`id`, `email`, `place_id`, `order_number`, `bill`, `paid`)
 CREATE TABLE `orders_details` (
   `id` int(5) NOT NULL,
   `orders_id` int(5) NOT NULL,
-  `products_id` int(5) NOT NULL,
-  `product_letter` varchar(5) NOT NULL,
-  `qty` int(5) NOT NULL,
+  `product_code` varchar(255) NOT NULL,
+  `letter` varchar(1) NOT NULL,
+  `qty` int(5) NOT NULL DEFAULT 0,
+  `products_id` varchar(255) NOT NULL,
   `used` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -81,14 +86,9 @@ CREATE TABLE `orders_details` (
 -- Dump dei dati per la tabella `orders_details`
 --
 
-INSERT INTO `orders_details` (`id`, `orders_id`, `products_id`, `product_letter`, `qty`, `used`) VALUES
-(44, 34, 1, 'R', 4, 0),
-(45, 34, 2, 'E', 1, 0),
-(46, 35, 1, 'M', 3, 0),
-(47, 36, 2, 'G', 1, 0),
-(48, 36, 1, 'I', 1, 0),
-(49, 37, 1, 'Z', 1, 0),
-(50, 37, 2, 'N', 2, 0);
+INSERT INTO `orders_details` (`id`, `orders_id`, `product_code`, `letter`, `qty`, `products_id`, `used`) VALUES
+(13, 44, 'PIA', 'J', 3, '0', 1),
+(14, 44, 'BEV', 'N', 0, '2,8,2', 1);
 
 -- --------------------------------------------------------
 
@@ -124,18 +124,19 @@ INSERT INTO `place` (`id`, `name`) VALUES
 
 CREATE TABLE `products` (
   `id` int(5) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `code` varchar(255) NOT NULL,
-  `price` decimal(5,2) NOT NULL
+  `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dump dei dati per la tabella `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `code`, `price`) VALUES
-(1, 'Patatine', 'PAT', 3.00),
-(2, 'Salsiccia', 'SAL', 2.50);
+INSERT INTO `products` (`id`, `name`) VALUES
+(1, 'Acqua naturale'),
+(2, 'Acqua frizzante'),
+(6, 'Coca cola'),
+(8, 'Fanta'),
+(10, 'Sprite');
 
 --
 -- Indici per le tabelle scaricate
@@ -179,19 +180,19 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT per la tabella `accounts`
 --
 ALTER TABLE `accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT per la tabella `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT per la tabella `orders_details`
 --
 ALTER TABLE `orders_details`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT per la tabella `place`
@@ -203,7 +204,7 @@ ALTER TABLE `place`
 -- AUTO_INCREMENT per la tabella `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

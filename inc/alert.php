@@ -1,0 +1,35 @@
+<?php
+    if(filter_input(INPUT_GET,"msg")){
+      $color = 'success' ;
+      $msg = filter_input(INPUT_GET,"msg");
+      if($msg == "orderToPay"){
+        $color = 'warning';
+      }
+    ?>
+    <div class="alert alert-<?= $color ?> alert-dismissible fade show shadow" role="alert">
+      <i class="bi bi-check-circle"></i>
+      <?php
+      $alert_label = "msg_$msg";
+      echo $$alert_label;
+      ?>
+      <button class="btn-close" type="button" data-bs-dismiss="alert"
+        aria-label="Close"></button>
+    </div>
+    <?php
+    }
+
+    if(filter_input(INPUT_GET,"err")){
+      ?>
+      <div class="alert alert-danger alert-dismissible fade show shadow" role="alert">
+        <i class="bi bi-x-circle"></i>
+        <?php
+        $err= filter_input(INPUT_GET,"err");
+        $alert_label = "err_$err";
+        echo $$alert_label;
+        ?>
+        <button class="btn-close" type="button" data-bs-dismiss="alert"
+          aria-label="Close"></button>
+      </div>
+      <?php
+      }
+?>

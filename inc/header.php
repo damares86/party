@@ -1,10 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../vendor/autoload.php';   // If installed via composer
-$debug = new \bdk\Debug(array(
-    'collect' => true,
-    'output' => true,
-));
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -22,10 +19,10 @@ $debug = new \bdk\Debug(array(
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
     <!-- Favicons -->
 
-    <link rel="manifest" href="assets/img/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/img/favicon.ico">
     <meta name="theme-color" content="#AC1819">
 
@@ -50,4 +47,8 @@ $debug = new \bdk\Debug(array(
     <link href="assets/css/signin.css" rel="stylesheet">
     <link href="assets/css/custom.css" rel="stylesheet">
 </head>
-
+<?php
+foreach (glob("locale/*.php") as $row) {
+    require "$row";
+}
+?>

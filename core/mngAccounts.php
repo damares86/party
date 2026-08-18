@@ -7,11 +7,6 @@ use App\AccountsRepository;
 
 require_once __DIR__ . '/../vendor/autoload.php';   // If installed via composer
 
-$debug = new \bdk\Debug(array(
-    'collect' => true,
-    'output' => true,
-));
-
 $accounts = new AccountsRepository();
 
 if (filter_input(INPUT_GET, 'idToDel')) {
@@ -36,6 +31,7 @@ if ($operation == 'login') {
         session_start();
         $_SESSION['loggedin'] = true;
         $_SESSION['username'] = $username;
+        $_SESSION['id'] = $account[0]['id'];
 
         header("Location: ../index.php?msg=loginOk");
         exit;
@@ -65,7 +61,7 @@ if ($operation == 'login') {
     if (filter_input(INPUT_POST, "password")) {
         $postpass = filter_input(INPUT_POST, "password");
         $password = password_hash($postpass, PASSWORD_BCRYPT);
-        if ($accounts->update($id,[
+        if ($accounts->update($id, [
             'username' => $username,
             'password' => $password
         ])) {
@@ -75,8 +71,8 @@ if ($operation == 'login') {
             header("Location: ../admin/allAccounts.php?err=accountNoEdit");
             exit;
         }
-    }else{
-        if ($accounts->update($id,[
+    } else {
+        if ($accounts->update($id, [
             'username' => $username
         ])) {
             header("Location: ../admin/allAccounts.php?msg=accountEdit");
@@ -86,5 +82,4 @@ if ($operation == 'login') {
             exit;
         }
     }
-
 }

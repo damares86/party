@@ -9,3 +9,7 @@ a{
 a:hover{
     color: #950f0f;
 }
+
+.navbar-nav{
+    text-align:right;
+}

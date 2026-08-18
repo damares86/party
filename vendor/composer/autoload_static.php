@@ -7,24 +7,6 @@ namespace Composer\Autoload;
 class ComposerStaticInit66077593a8c375aba32e2515db6221a7
 {
     public static $prefixLengthsPsr4 = array (
-        'b' =>
-        array (
-            'bdk\\Teams\\' => 10,
-            'bdk\\Slack\\' => 10,
-            'bdk\\PubSub\\' => 11,
-            'bdk\\Promise\\' => 12,
-            'bdk\\HttpMessage\\' => 16,
-            'bdk\\HttpFactory\\' => 16,
-            'bdk\\ErrorHandler\\' => 17,
-            'bdk\\Debug\\' => 10,
-            'bdk\\CurlHttpMessage\\' => 20,
-            'bdk\\Container\\' => 14,
-            'bdk\\Backtrace\\' => 14,
-        ),
-        'P' =>
-        array (
-            'Psr\\Http\\Message\\' => 17,
-        ),
         'A' =>
         array (
             'App\\' => 4,
@@ -32,55 +14,6 @@ class ComposerStaticInit66077593a8c375aba32e2515db6221a7
     );
 
     public static $prefixDirsPsr4 = array (
-        'bdk\\Teams\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/debug/src/Teams',
-        ),
-        'bdk\\Slack\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/debug/src/Slack',
-        ),
-        'bdk\\PubSub\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/debug/src/PubSub',
-        ),
-        'bdk\\Promise\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/debug/src/Promise',
-        ),
-        'bdk\\HttpMessage\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/http-message/src/HttpMessage',
-        ),
-        'bdk\\HttpFactory\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/http-message/src/HttpFactory',
-        ),
-        'bdk\\ErrorHandler\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/debug/src/ErrorHandler',
-        ),
-        'bdk\\Debug\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/debug/src/Debug',
-        ),
-        'bdk\\CurlHttpMessage\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/debug/src/CurlHttpMessage',
-        ),
-        'bdk\\Container\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/debug/src/Container',
-        ),
-        'bdk\\Backtrace\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/bdk/debug/src/Backtrace',
-        ),
-        'Psr\\Http\\Message\\' =>
-        array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
-        ),
         'App\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
@@ -89,13 +22,6 @@ class ComposerStaticInit66077593a8c375aba32e2515db6221a7
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'SqlFormatter' => __DIR__ . '/..' . '/jdorn/sql-formatter/lib/SqlFormatter.php',
-        'bdk\\Backtrace' => __DIR__ . '/..' . '/bdk/debug/src/Backtrace/Backtrace.php',
-        'bdk\\Container' => __DIR__ . '/..' . '/bdk/debug/src/Container/Container.php',
-        'bdk\\Debug' => __DIR__ . '/..' . '/bdk/debug/src/Debug/Debug.php',
-        'bdk\\Debug\\Utility' => __DIR__ . '/..' . '/bdk/debug/src/Debug/Utility/Utility.php',
-        'bdk\\ErrorHandler' => __DIR__ . '/..' . '/bdk/debug/src/ErrorHandler/ErrorHandler.php',
-        'bdk\\Promise' => __DIR__ . '/..' . '/bdk/debug/src/Promise/Promise.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

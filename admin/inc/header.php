@@ -5,6 +5,8 @@ if (!$_SESSION['loggedin']) {
     header("Location: ../error.php");
     exit;
 }
+
+require "../locale/it.php";
 ?>
 <!doctype html>
 <html lang="en">

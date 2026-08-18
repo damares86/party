@@ -8,27 +8,22 @@ use App\OrderRepository;
 
 require_once __DIR__ . '/../vendor/autoload.php';   // If installed via composer
 
-$debug = new \bdk\Debug(array(
-    'collect' => true,
-    'output' => true,
-));
 
 $products = new ProductRepository();
 $orders = new OrderRepository();
 
-if(filter_input(INPUT_GET,'idToDel')){
-    $id = filter_input(INPUT_GET,'idToDel');
-    if($orders->delete($id)){
+if (filter_input(INPUT_GET, 'idToDel')) {
+    $id = filter_input(INPUT_GET, 'idToDel');
+    if ($orders->delete($id)) {
         header("Location: ../admin/allBooking.php?msg=bookingDelete");
         exit;
-    }else{
+    } else {
         header("Location: ../admin/allBooking.php?err=bookingNoDelete");
         exit;
     }
 }
 
 $operation = filter_input(INPUT_POST, "operation");
-
 
 if ($operation == "add") {
 
@@ -41,14 +36,22 @@ if ($operation == "add") {
     $new_order_number = $last['order_number'] + 1;
 
     // IF PLACES ARE NOT USED, COMMENT THIS CODE
-    $place = filter_input(INPUT_POST,'place');
+    $place = filter_input(INPUT_POST, 'place');
+    $packages = count($_POST['items']);
+    $bill = $packages * 5;
 
     // inserire ordine nella tabella 'orders'
-    $new_order = $orders->insert([
+    if (!$orders->insert([
         'email' => $email,
         'place_id' => $place,
-        'order_number' => $new_order_number
-    ]);
+        'order_number' => $new_order_number,
+        'qty' => $packages,
+        'bill' => $bill
+    ])) {
+        header("Location: ../index.php?err=errAddBooking");
+        exit;
+    }
+
 
     // get the inserted order id
     $order_inserted = $orders->findLast();
@@ -56,41 +59,59 @@ if ($operation == "add") {
 
     // create an array with all the products, for the email
     $order_products = [];
-    $total_price = 0;
+
+    // inserisco i cibi
+    $orders->table = 'orders_details';
     $letters = range('A', 'Z');
 
-    // cycle the products
-    foreach ($_POST['items'] as $item) {
-
-
-        $letter = $letters[random_int(0, count($letters) - 1)];
-        $orders->table = 'orders_details';
-
-        $new_order_detail = $orders->insert([
-            'orders_id' => $order_inserted_id,
-            'products_id' => $item['product_id'],
-            'product_letter' => $letter,
-            'qty' => $item['qty']
-        ]);
-
-        $prod_stmt = $products->findById($item['product_id']);
-        $product_name = $prod_stmt['name'];
-        $product_code = $prod_stmt['code'];
-        $product_price = $prod_stmt['price'] * $item['qty'];
-
-        $order_products[] = array(
-            'product_name' => $product_name,
-            'product_code' => $product_code,
-            'product_price' => $product_price,
-            'product_letter' => $letter,
-            'qty' => $item['qty']
-        );
-
-        $total_price += $product_price;
+    $pia_letter = $letters[random_int(0, count($letters) - 1)];
+    // salsiccie
+    if (!$orders->insert([
+        'orders_id' => $order_inserted_id,
+        'product_code' => 'PIA',
+        'letter' => $pia_letter,
+        'qty' => $packages,
+        'products_id' => 0
+    ])) {
+        header("Location: ../index.php?err=errAddProductBooking");
+        exit;
     }
 
-    $orders->table = 'orders';
-    $orders->update($order_inserted_id, ['bill' => $total_price]);
+
+    // ciclo le bevande
+    $bev_arr = [];
+    foreach ($_POST['items'] as $item) {
+        // creo un arraiy con gli id delle bevande
+        $bev_arr[] = $item['product_id'];
+        /*         $new_order_detail = $orders->insert([
+            'orders_id' => $order_inserted_id,
+            'product_code' => 'BEV',
+            'letter' => $bev_letter,
+            'qty' => 1,
+            'products_id' => $item['product_id']
+            ]);
+            */
+
+        // recupero nome bevanda per la mail di riepilogo
+        $prod_stmt = $products->findById($item['product_id']);
+        $product_name = $prod_stmt['name'];
+
+        $order_products[] = array(
+            'product_name' => $product_name
+        );
+    }
+
+    $bev_str = implode(',', $bev_arr);
+    $bev_letter = $letters[random_int(0, count($letters) - 1)];
+    if (!$orders->insert([
+        'orders_id' => $order_inserted_id,
+        'product_code' => 'BEV',
+        'letter' => $bev_letter,
+        'products_id' => $bev_str
+    ])) {
+        header("Location: ../index.php?err=errAddProductBooking");
+        exit;
+    }
 
     $error = 0;
 
@@ -112,23 +133,24 @@ if ($operation == "add") {
             </head>
             <body style="font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;padding:30px;">
 
-                <div style="max-width:700px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
+                <div style="max-width:100%;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
                     <h2 style="text-align:center">Partynsieme - Agnelli</h2>
                     <h3 style="background-color:#ff0000;color:#fff;">ATTENZIONE: la prenotazione non sarà valida fino a quando non verrà saldato l\'importo. <u>Non sarà possibile pagare la sera stessa</u>, l\'importo dovrà essere saldato nei giorni precedenti.<br>
                     Per pagare sarà necessario comunicare la <strong>mail usata per la prenotazione e il numero d\'ordine</strong>.
                     </h3>
                     
                     <h2 style="margin-top:0;">
-                    Dati prenotazione <u>' . $new_order_number . '</u>
+                    Numero prenotazione: <u>' . $new_order_number . '</u>
                     </h2>
                     <ul>';
     foreach ($order_products as $list_item) {
-        $output .= '    <li style="margin:1em auto;">' . $list_item['qty'] . 'x ' . $list_item['product_name'] . ' -> cod. <strong>' . $list_item['product_code'] . '-' . $new_order_number . $list_item['product_letter'] . '</strong> - ' . $list_item['product_price'] . '€</li>';
+        $output .= '    <li style="margin:1em auto;">1 pacchetto con <strong>' . $list_item['product_name'] . '</strong> </li>';
     }
 
     $output .= '    </ul>
                     <hr>
-                    <p>Prezzo totale da pagare: <strong>' . $total_price . '€</strong></p>
+                    <p>Totale pacchetti: <strong>' . $packages . '</strong></p>
+                    <p>Prezzo totale da pagare: <strong>' . $bill . '€</strong></p>
                     <hr>
                     <p>In caso di errori presenti nell\'ordine, contattare <a href="mailto:economo@agnelli.it">economo@agnelli.it</a></p>
                 </div>
@@ -141,59 +163,226 @@ if ($operation == "add") {
     }
 
     if ($error > 0) {
-        header("Location: ../booking.php?err=errSendMail");
+        header("Location: ../index.php?err=errSendMail");
         exit;
     } else {
-        header("Location: ../booking.php?msg=mailSend");
+        header("Location: ../index.php?msg=mailSend");
         exit;
     }
 } else if ($operation == "edit") {
-    // modifica delle prenotazioni
-    print_r($_POST);
-    exit;
 
-    // TODO
-    // - prendere i recordo in cui c'è la lettera, quindi esistenti
-    //   - se la quantità è 0 eliminarli
-    //   - altrimenti modificare la quantità
-    // - prendere i nuovi record e inserirli
-    // - riconteggiare il prezzo totale
+    $idToMod = filter_input(
+        INPUT_POST,
+        'idToMod',
+        FILTER_VALIDATE_INT
+    );
+
+    if (!$idToMod) {
+        die('ID ordine non valido');
+    }
 
 
+    /*
+ * Recuperiamo gli items
+ */
+    $items = $_POST['items'] ?? [];
+
+    if (empty($items)) {
+        die('L\'ordine deve contenere almeno un pacchetto');
+    }
+
+
+    /*
+ * Dati ordine
+ */
+    $email = filter_input(
+        INPUT_POST,
+        'email',
+        FILTER_VALIDATE_EMAIL
+    );
+
+    $placeId = filter_input(
+        INPUT_POST,
+        'place',
+        FILTER_VALIDATE_INT
+    );
+
+    $paid = isset($_POST['paid']) ? 1 : 0;
+
+
+    /*
+ * Dati pacchetti
+ */
+
+    // Numero di pacchetti
+    $qty = count($items);
+
+    // Prezzo fisso del pacchetto
+    $packagePrice = 5;
+
+    // Totale ordine
+    $bill = $qty * $packagePrice;
+
+
+    /*
+ * Recuperiamo gli ID delle bevande
+ *
+ * Esempio:
+ *
+ * [
+ *     2,
+ *     8,
+ *     2,
+ *     8
+ * ]
+ *
+ * diventa:
+ *
+ * "2,8,2,8"
+ */
+    $productsIds = array_column($items, 'product_id');
+
+    $productsString = implode(',', $productsIds);
+
+
+    $orders = new OrderRepository();
+
+
+    try {
+
+        /*
+     * Inizio transazione
+     */
+        $orders->beginTransaction();
+
+
+        /*
+     * ==========================================
+     * ORDERS_DETAILS - PIA
+     * ==========================================
+     *
+     * Aggiorniamo il numero di pacchetti.
+     */
+        $orders->table = 'orders_details';
+
+        $orders->updateByConditions(
+            [
+                'orders_id' => $idToMod,
+                'product_code' => 'PIA'
+            ],
+            [
+                'qty' => $qty
+            ]
+        );
+
+
+        /*
+     * ==========================================
+     * ORDERS_DETAILS - BEV
+     * ==========================================
+     *
+     * Aggiorniamo la lista delle bevande.
+     */
+        $orders->updateByConditions(
+            [
+                'orders_id' => $idToMod,
+                'product_code' => 'BEV'
+            ],
+            [
+                'products_id' => $productsString
+            ]
+        );
+
+
+        /*
+     * ==========================================
+     * ORDERS
+     * ==========================================
+     *
+     * Aggiorniamo i dati principali dell'ordine.
+     */
+        $orders->table = 'orders';
+
+        $orders->update(
+            $idToMod,
+            [
+                'email' => $email,
+                'place_id' => $placeId,
+                'qty' => $qty,
+                'bill' => $bill,
+                'paid' => $paid
+            ]
+        );
+
+
+        /*
+     * ==========================================
+     * CONFERMA
+     * ==========================================
+     */
+        $orders->commit();
+
+
+        /*
+     * Redirect
+     */
+        header(
+            'Location: ../admin/allBooking.php?msg=bookingEditOk'
+        );
+
+        exit;
+    } catch (Throwable $e) {
+
+        $orders->rollBack();
+
+        header(
+            'Location: ../admin/allBooking.php?err=bookingEditFail'
+        );
+
+        exit;
+    }
 } else if ($operation == "book") {
 
-    $order_number = filter_input(INPUT_POST, 'number');
-    $order_to_check = $orders->findBy(['order_number' => $order_number]);
+    $order_id = filter_input(INPUT_POST, 'idToUse');
+    $orders->table = "orders_details";
 
-    if ($order_to_check[0]['paid'] == 0) {
-        header("Location: ../index.php?err=noPaid");
-        exit;
-    }
-
-    $orders_id = $order_to_check[0]['id'];
-    $products_id = filter_input(INPUT_POST, 'product_id');
-    $product_letter = filter_input(INPUT_POST, 'letter');
-
-    $orders->table = 'orders_details';
-
-    $order_check = $orders->findBy([
-        'orders_id' => $orders_id,
-        'products_id' => $products_id,
-        'product_letter' => $product_letter
-    ]);
-
-    if ($order_check[0]['used'] == 1) {
-        header("Location: ../index.php?err=used");
-        exit;
-    }
-    $id = $order_check[0]['id'];
-    if ($orders->update($id, ['used' => 1])) {
-        header("Location: ../index.php?msg=bookSucc");
+    if ($orders->update($order_id, ['used' => 1])) {
+        header("Location: ../manage.php?msg=bookSucc");
         exit;
     } else {
-        header("Location: ../index.php?err=bookErr");
+        header("Location: ../manage.php?err=bookErr");
         exit;
     }
+} else if ($operation == "check") {
+    // controllo prenotazione da usare
+    $order_number = filter_input(INPUT_POST, 'number');
+    $order_check = $orders->findBy([
+        'order_number' => $order_number
+    ]);
+
+
+    $id = $order_check[0]['id'];
+    $code = filter_input(INPUT_POST, 'product_code');
+    $letter = filter_input(INPUT_POST, 'letter');
+    $orders->table = "orders_details";
+    $prod_check = $orders->findBy([
+        'orders_id' => $id,
+        'product_code' => $code,
+        'letter' => $letter
+    ]);
+
+    $msg = '';
+
+    if (count($prod_check) == 0) {
+        $msg = 'err=noOrder';
+    } else if ($prod_check[0]['used'] == 0) {
+        $msg = 'msg=orderToUse&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'] . '&code=' . $code . '&letter=' . $letter . '';
+    } else if ($prod_check[0]['used'] == 1) {
+        $msg = 'err=orderUsed&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
+    }
+
+    header("Location: ../manage.php?$msg");
+    exit;
 } else if ($operation == "search") {
     // ricerca prenotazione da pagare
 
@@ -207,7 +396,7 @@ if ($operation == "add") {
     $msg = '';
 
     if (count($order_check) == 0) {
-        $msg = 'msg=noOrder';
+        $msg = 'err=noOrder';
     } else if ($order_check[0]['paid'] == 0) {
         $msg = 'msg=orderToPay&email=' . $order_check[0]['email'] . '&order_number=' . $order_check[0]['order_number'] . '&id=' . $order_check[0]['id'];
     } else if ($order_check[0]['paid'] == 1) {
@@ -229,10 +418,12 @@ if ($operation == "add") {
         $order_paid = $orders->findById($id);
         $order_number = $order_paid['order_number'];
         $email = $order_paid['email'];
-        
-        $orders->table = 'orders_details';
-        $order_products = $orders->findBy(['orders_id' => $id]);
+        $qty = $order_paid['qty'];
 
+        $orders->table = 'orders_details';
+        $pia_products = $orders->findBy(['orders_id' => $id, 'product_code' => 'PIA']);
+
+        $bev_products = $orders->findBy(['orders_id' => $id, 'product_code' => 'BEV']);
 
         ////////////////////////////////////////////////
         ///    INVIO MAIL DI CONFERMA PAGAMENTO
@@ -258,22 +449,27 @@ if ($operation == "add") {
             </head>
             <body style="font-family:Arial,Helvetica,sans-serif;background:#f5f5f5;padding:30px;">
 
-                <div style="max-width:700px;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
+                <div style="max-width:100%;margin:auto;background:#ffffff;padding:30px;border-radius:8px;">
                     <h2 style="text-align:center">Partynsieme - Agnelli</h2>
                     <h3 style="background-color:#00ff00;color:#000; padding:0.5em;">Prenotazione pagata</h3>
                     
                     <h2 style="margin-top:0;">
                     Dati prenotazione <u>' . $order_number . '</u>
                     </h2>
+                    <ul>
+                    <li style="margin:1em auto;">' . $qty . ' piatti  -> cod. <strong>PIA-' . $order_number . $pia_products[0]['letter'] . '</strong></li>
+                    <li style="margin:1em auto;">' . $qty . ' bibite -> cod. <strong>BEV-' . $order_number . $bev_products[0]['letter'] . '</strong></li>
                     <ul>';
-        foreach ($order_products as $list_item) {
-            
-            $product_data = $products->findById($list_item['products_id']);
+        $bev_arr = explode(',', $bev_products[0]['products_id']);
+        foreach ($bev_arr as $list_item) {
 
-            $output .= '    <li style="margin:1em auto;">' . $list_item['qty'] . 'x ' . $product_data['name'] . ' -> cod. <strong>' . $product_data['code'] . '-' . $order_number . $list_item['product_letter'] . '</strong></li>';
+            $product_data = $products->findById($list_item);
+
+            $output .= '    <li style="margin:1em auto;">1 ' . $product_data['name'] . '</strong></li>';
         }
 
-        $output .= '    </ul>
+        $output .= '        </ul>
+                        </ul>
                     <hr>
                     <p>In caso di errori presenti nell\'ordine, contattare <a href="mailto:economo@agnelli.it">economo@agnelli.it</a></p>
                 </div>
@@ -286,7 +482,7 @@ if ($operation == "add") {
         }
 
         if ($error > 0) {
-            header("Location: ../payment.php?err=errPaySendMail");
+            header("Location: ../payment.php?msg=paidSucc&err=errPaySendMail");
             exit;
         } else {
             header("Location: ../payment.php?msg=paidSucc");

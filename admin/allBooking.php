@@ -25,6 +25,10 @@ $place = new PlaceRepository();
 
         <div>
             <div class="container px-4 py-5" id="featured-3">
+                <?php
+                require "inc/alert.php";
+                ?>
+
                 <h2 class="pb-2 border-bottom">Prenotazioni</h2>
 
                 <a href="../booking.php" class="btn btn-success my-3">+ Aggiungi prenotazione</a>

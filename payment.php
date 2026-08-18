@@ -4,20 +4,26 @@ declare(strict_types=1);
 
 require 'inc/header.php';
 session_start();
-if(!$_SESSION['loggedin']){
+if (!$_SESSION['loggedin']) {
     header("Location: error.php");
     exit;
 }
+
 use App\ProductRepository;
 use App\OrderRepository;
 
 $products = new ProductRepository();
 $orders = new OrderRepository();
 $list = $products->findAll();
+$msg = '';
+$order_number = '' ;
+$email = '' ;
+if ($_GET) {
 
-$email = $_GET['email'] ? filter_input(INPUT_GET, 'email') : '';
-$order_number = $_GET['order_number'] ? filter_input(INPUT_GET, 'order_number') : '';
-$msg = filter_input(INPUT_GET, 'msg');
+    $email =filter_input(INPUT_GET, 'email');
+    $order_number = filter_input(INPUT_GET, 'order_number');
+    $msg = filter_input(INPUT_GET, 'msg');
+}
 
 $button = $msg == 'orderToPay' ? 'Paga' : 'Cerca';
 $operation = $msg == 'orderToPay' ? 'pay' : 'search';
@@ -39,16 +45,25 @@ $pagename = 'payment';
             <h1 class="mb-3 ">Partyinsieme</h1>
             <?php
             require 'inc/navbar.php';
+            
+            require "inc/alert.php";
             ?>
             <h5>Pagamento</h5>
             <div class="col-12 my-5">
+                <?php
+                if ($msg == 'orderToPay') {
+                ?>
+                    <a href="payment.php"><b>Cerca un altro ordine</b></a>
 
+                <?php
+                }
+                ?>
                 <?php
                 if ($msg == 'paidSucc') {
                 ?>
-                    <div class="my-3 p-3 bg-success text-white">
+<!--                     <div class="my-3 p-3 bg-success text-white">
                         <b>Ordine pagato</b>
-                    </div>
+                    </div> -->
                     <div class="my-3">
                         <b>Cerca un altro ordine</b>
                     </div>
@@ -71,7 +86,7 @@ $pagename = 'payment';
                 <?php
                 if ($msg == 'orderToPay') {
                 ?>
-                    <div class="col-12 mb-4">
+                    <div class="col-12 mb-4 bg-warning py-3">
                         <label for="code" class="form-label">Totale da pagare</label>
                         <br><b><?= $bill ?> €</b>
                     </div>
@@ -80,9 +95,9 @@ $pagename = 'payment';
                 <?php
                 } else if ($msg == 'orderPaid') {
                 ?>
-                    <div class="my-3 p-3 bg-success text-white">
+<!--                     <div class="my-3 p-3 bg-success text-white">
                         <b>Ordine pagato</b>
-                    </div>
+                    </div> -->
                 <?php
                 }
                 ?>
@@ -90,11 +105,11 @@ $pagename = 'payment';
                 <input type="hidden" name="operation" value="<?= $operation ?>">
 
                 <button class="w-100 btn btn-lg text-white" type="submit"><?= $button ?></button>
-                <?php
-                require 'inc/footer.php';
-                ?>
             </div>
         </form>
+        <?php
+        require 'inc/footer.php';
+        ?>
     </main>
 
 
