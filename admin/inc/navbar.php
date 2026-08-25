@@ -25,6 +25,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="../core/logout.php">Logout</a>
                 </li>
+                <li class="nav-item border-top">
+                    <a class="nav-link" href="reset.php">Reset</a>
+                </li>
 
             </ul>
         </div>

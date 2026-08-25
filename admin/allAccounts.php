@@ -60,7 +60,7 @@ $list = $accounts->findAll();
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    Se clicchi su 'Conferma' questo utenet verrà cancellato definitivamente.
+                                                    Se clicchi su 'Conferma' questo utente verrà cancellato definitivamente.
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
