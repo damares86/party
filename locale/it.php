@@ -21,6 +21,7 @@ $msg_orderPaid = "Ordine già pagato";
 $msg_orderToPay = "Ordine da pagare";
 $msg_paidSucc = "Pagamento effettuato. Verrà inviata una mail di conferma";
 $msg_bookingEditOk = "Prenotazione modificata";
+$msg_onlyMassBooking = "Prenotazione per la Messa effettuata";
 
 //////  MAIN ERR ALERT  //////
 

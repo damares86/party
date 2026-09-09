@@ -78,6 +78,26 @@ $bev_arr = explode(',', $order_bev[0]['products_id']);
                                 Inserire una email valida
                             </div>
                         </div>
+
+                        <!-- ============================ -->
+                        <!-- NUOVO: Partecipi alla Messa? -->
+                        <!-- ============================ -->
+                        <div class="col-12 mb-4">
+                            <label class="form-label d-block">Partecipi alla Messa?</label>
+                            <?php
+                            $massYesChecked = ($orderToMod['mass'] == 1) ? 'checked' : '';
+                            $massNoChecked = ($orderToMod['mass'] == 0) ? 'checked' : '';
+                            ?>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="mass" id="massYes" value="1" <?= $massYesChecked ?> required>
+                                <label class="form-check-label" for="massYes">Sì</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="mass" id="massNo" value="0" <?= $massNoChecked ?> required>
+                                <label class="form-check-label" for="massNo">No</label>
+                            </div>
+                        </div>
+
                         <h6 class="border-top pt-3">Ordine</h6>
 
                         <div id="orderContainer">
