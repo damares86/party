@@ -60,7 +60,7 @@ $list = $products->findAll();
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    Se clicchi su 'Conferma' questo cibo verrà cancellato definitivamente.
+                                                    Se clicchi su 'Conferma' questa bevanda verrà cancellata definitivamente.
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
