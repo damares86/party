@@ -5,11 +5,16 @@ require_once '../vendor/autoload.php';
 
 use App\PlaceRepository;
 use App\OrderRepository;
+use App\ProductRepository;
+
+$products = new ProductRepository();
 
 $orders = new OrderRepository();
 
 $place = new PlaceRepository();
 $place_list = $place->findAll();
+
+
 
 ?>
 
@@ -65,18 +70,18 @@ $place_list = $place->findAll();
                 <div class="row">
                     <div class="col text-left">
                         <h3 class="d-inline">Partecipanti alla Messa: <u>
-                            <?php
+                                <?php
                                 $num = $orders->findAll();
-                                $mass_tot = 0 ;
-                                foreach($num as $n){
+                                $mass_tot = 0;
+                                foreach ($num as $n) {
                                     $mass_tot += $n['qty'];
-                                    if($n['qty'] == 0){
-                                        $mass_tot ++;
+                                    if ($n['qty'] == 0) {
+                                        $mass_tot++;
                                     }
                                 }
-                                echo $mass_tot ;
-                            ?>
-                        </u></h3>
+                                echo $mass_tot;
+                                ?>
+                            </u></h3>
                     </div>
                 </div>
                 <div class="row">
@@ -153,6 +158,9 @@ $place_list = $place->findAll();
                     <div class="col-6">
                         <b>Totale soldi da raccogliere / totali:</b> <span class="text-<?= $color_paid ?>"><?= $total_orders_paid ?> € / <?= $total_orders_bill ?> €</span>
                     </div>
+                </div>
+                <div class="row">        
+                    <a href="allBeverage.php">Totale bevande --></a>
                 </div>
             </div>
         </div>
