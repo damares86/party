@@ -35,6 +35,12 @@ if ($pagename == 'index') {
                 <!-- <li class="nav-item"><a href="<?= $link_booking ?>" class="nav-link <?= $active_booking ?>">Prenota</a></li> -->
             <?php
             }
+            if ($_SESSION['id'] == 1) {
+            ?>
+                <li class="nav-item"><a href="checkOrder.php" class="nav-link">Codici</a></li>
+                <!-- <li class="nav-item"><a href="<?= $link_booking ?>" class="nav-link <?= $active_booking ?>">Prenota</a></li> -->
+            <?php
+            }
             ?>
         </ul>
     </header>
