@@ -28,7 +28,7 @@ $pagename = 'booking';
                 if ($_SESSION['loggedin']) {
                     require 'inc/navbar.php';
                 }
-                if ($_SESSION['id'] == 2) {
+                if ($_SESSION['id'] == 2 || $_SESSION['id'] == 7) {
                     header("Location: payment.php");
                 }
                 if ($_SESSION['id'] > 2) {

@@ -63,6 +63,23 @@ $place_list = $place->findAll();
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col text-left">
+                        <h3 class="d-inline">Partecipanti alla Messa: <u>
+                            <?php
+                                $num = $orders->findAll();
+                                $mass_tot = 0 ;
+                                foreach($num as $n){
+                                    $mass_tot += $n['qty'];
+                                    if($n['qty'] == 0){
+                                        $mass_tot ++;
+                                    }
+                                }
+                                echo $mass_tot ;
+                            ?>
+                        </u></h3>
+                    </div>
+                </div>
+                <div class="row">
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -90,7 +107,7 @@ $place_list = $place->findAll();
                                     continue;
                                 }
                                 // ordini totali
-                                $total_orders++;
+                                $total_orders += $item['qty'];
 
                                 // soldi totali dell'ambiente
                                 $place_order_bill_total += $item['bill'];

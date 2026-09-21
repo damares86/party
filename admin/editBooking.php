@@ -17,6 +17,7 @@ $orders = new OrderRepository();
 $place = new PlaceRepository();
 $place_list = $place->findAll();
 
+
 $idToMod = filter_input(INPUT_GET, 'id');
 
 $orderToMod = $orders->findById($idToMod);
@@ -54,6 +55,7 @@ $bev_arr = explode(',', $order_bev[0]['products_id']);
                                 <option value="">---</option>
                                 <?php
                                 $selected = '';
+                                
                                 foreach ($place_list as $p) {
                                     if ($p['id'] == $orderToMod['place_id']) {
                                         $selected = 'selected';
@@ -63,8 +65,8 @@ $bev_arr = explode(',', $order_bev[0]['products_id']);
                                     <option value="<?= $p['id'] ?>" <?= $selected ?>><?= $p['name'] ?></option>
 
                                 <?php
-                                }
                                 $selected = '';
+                                }
                                 ?>
                             </select>
                             <div class="invalid-feedback">
