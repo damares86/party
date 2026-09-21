@@ -45,11 +45,12 @@ $place = new PlaceRepository();
                     <thead>
                         <tr>
                             <th style="width:10%">Numero prenotazione</th>
-                            <th style="width:30%">Email</th>
-                            <th style="width:30%">Ambiente</th>
+                            <th style="width:25%">Email</th>
+                            <th style="width:20%">Ambiente</th>
                             <th style="width:10%">Totale</th>
+                            <th style="width:10%">Messa</th>
                             <th style="width:10%">Pagato</th>
-                            <th style="width:20%">Azioni</th>
+                            <th style="width:15%">Azioni</th>
                         </tr>
                     </thead>
 
@@ -68,12 +69,31 @@ $place = new PlaceRepository();
                                 <td><?= $item['bill'] ?> €</td>
                                 <td>
                                     <?php
+                                    // NUOVO: colonna Messa
+                                    echo $item['mass'] == 1 ? 'Sì' : 'No';
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php
                                     $paid = $item['paid'] == 0 ? 'No' : 'Sì';
                                     echo $paid;
                                     ?>
                                 </td>
                                 <td>
-                                    <a href="editBooking.php?id=<?= $item['id'] ?>" class="btn btn-warning">Modifica</a>
+                                    <?php
+                                    // NUOVO: gli ordini con qty = 0 (solo Messa, senza festa)
+                                    // non hanno righe in orders_details, quindi non sono
+                                    // modificabili da editBooking.php.
+                                    if ($item['qty'] > 0) {
+                                    ?>
+                                        <a href="editBooking.php?id=<?= $item['id'] ?>" class="btn btn-warning">Modifica</a>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <span class="badge bg-secondary">Solo Messa</span>
+                                    <?php
+                                    }
+                                    ?>
                                     <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#danger<?= $item['id'] ?>">Elimina
                                     </a>
                                     <!--Danger theme Modal -->

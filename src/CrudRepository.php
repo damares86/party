@@ -84,6 +84,18 @@ abstract class CrudRepository
         return $stmt->fetchAll();
     }
 
+    public function countAll()
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*)
+         FROM `{$this->table}`"
+        );
+
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn();
+    }
+
     public function insert(array $data): int
     {
         $columns = implode(',', array_keys($data));
@@ -179,5 +191,19 @@ abstract class CrudRepository
             ->execute([
                 'id' => $id
             ]);
+    }
+    public function truncate(string $table): void
+    {
+
+        // Permette solo nomi di tabelle validi
+/*         if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+            throw new InvalidArgumentException(
+                'Nome tabella non valido'
+            );
+        }
+ */
+        $this->db->exec(
+            "TRUNCATE TABLE `{$table}`"
+        );
     }
 }

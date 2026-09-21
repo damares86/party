@@ -30,6 +30,17 @@ if ($operation == "add") {
     // get email
     $email = filter_input(INPUT_POST, 'email');
 
+    // NUOVO: risposte ai radio "Partecipi alla Messa?" e "Partecipi alla festa?"
+    $party = filter_input(INPUT_POST, 'party'); // '1' = sì, '0' = no
+    $mass_answer = filter_input(INPUT_POST, 'mass'); // '1' = sì, '0' = no
+
+    // NUOVO: la prenotazione richiede almeno la partecipazione alla Messa.
+    // Controllo lato server, oltre a quello lato client in index.php.
+    if ($mass_answer !== '1') {
+        header("Location: ../index.php?err=errNoMass");
+        exit;
+    }
+
     // range for the random letter
 
     $last = $orders->findLast();
@@ -37,6 +48,34 @@ if ($operation == "add") {
 
     // IF PLACES ARE NOT USED, COMMENT THIS CODE
     $place = filter_input(INPUT_POST, 'place');
+
+    // ==========================================================
+    // NUOVO: CASO "Partecipi alla festa?" = NO
+    // Inserisce l'ordine con qty = 0 e mass = 1, senza prodotti
+    // e senza inviare la mail di riepilogo.
+    // ==========================================================
+    if ($party === '0') {
+
+        if (!$orders->insert([
+            'email' => $email,
+            'place_id' => $place,
+            'order_number' => $new_order_number,
+            'qty' => 0,
+            'mass' => 1,
+            'bill' => 0
+        ])) {
+            header("Location: ../index.php?err=errAddBooking");
+            exit;
+        }
+
+        // nessuna mail da inviare in questo caso
+        header("Location: ../index.php?msg=onlyMassBooking"); // TODO: valorizzare il messaggio desiderato
+        exit;
+    }
+
+    // ==========================================================
+    // CASO "Partecipi alla festa?" = SI' (flusso originale)
+    // ==========================================================
     $packages = count($_POST['items']);
     $bill = $packages * 5;
 
@@ -46,6 +85,7 @@ if ($operation == "add") {
         'place_id' => $place,
         'order_number' => $new_order_number,
         'qty' => $packages,
+        'mass' => $mass_answer === '1' ? 1 : 0, // NUOVO
         'bill' => $bill
     ])) {
         header("Location: ../index.php?err=errAddBooking");
@@ -209,6 +249,10 @@ if ($operation == "add") {
 
     $paid = isset($_POST['paid']) ? 1 : 0;
 
+    // NUOVO: risposta al radio "Partecipi alla Messa?"
+    $mass_answer = filter_input(INPUT_POST, 'mass');
+    $mass = $mass_answer === '1' ? 1 : 0;
+
 
     /*
  * Dati pacchetti
@@ -309,6 +353,7 @@ if ($operation == "add") {
                 'email' => $email,
                 'place_id' => $placeId,
                 'qty' => $qty,
+                'mass' => $mass, // NUOVO
                 'bill' => $bill,
                 'paid' => $paid
             ]

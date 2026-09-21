@@ -5,10 +5,10 @@ require 'inc/header.php';
 
 require_once '../vendor/autoload.php';
 
-use App\AccountsRepository;
-$accounts = new AccountsRepository();
+use App\PlaceRepository;
+$places = new PlaceRepository();
 
-$list = $accounts->findAll();
+$list = $places->findAll();
 ?>
 
 <body>
@@ -25,14 +25,14 @@ $list = $accounts->findAll();
                 require "inc/alert.php";
                 ?>
 
-                <h2 class="pb-2 border-bottom">Utenti</h2>
+                <h2 class="pb-2 border-bottom">Ambienti</h2>
 
-                <a href="../register.php" class="btn btn-success my-3">+ Aggiungi utente</a>
+                <a href="addPlace.php" class="btn btn-success my-3">+ Aggiungi ambiente</a>
 
                 <table id="table" class="table table-striped">
                     <thead>
                         <tr>
-                            <th style="width:60%">Username</th>
+                            <th style="width:30%">Nome ambiente</th>
                             <th style="width:40%">Azioni</th>
                         </tr>
                     </thead>
@@ -42,9 +42,9 @@ $list = $accounts->findAll();
                         foreach ($list as $item) {
                         ?>
                             <tr>
-                                <td><?= $item['username'] ?></td>
+                                <td><?= $item['name'] ?></td>
                                 <td>
-                                    <a href="editAccount.php?id=<?= $item['id'] ?>" class="btn btn-warning">Modifica</a>
+                                    <a href="editPlace.php?id=<?= $item['id'] ?>" class="btn btn-warning">Modifica</a>
                                     <a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#danger<?= $item['id'] ?>">Elimina
                                     </a>
                                     <!--Danger theme Modal -->
@@ -60,14 +60,14 @@ $list = $accounts->findAll();
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    Se clicchi su 'Conferma' questo utente verrà cancellato definitivamente.
+                                                    Se clicchi su 'Conferma' questo ambiente verrà cancellato definitivamente.
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                                                         <i class="bx bx-x d-block d-sm-none"></i>
                                                         <span class="d-none d-sm-block">Indietro</span>
                                                     </button>
-                                                    <span class="d-none d-sm-block"><a href="../core/mngAccounts.php?idToDel=<?= $item['id'] ?>" class="btn btn-danger ml-1">
+                                                    <span class="d-none d-sm-block"><a href="../core/mngPlaces.php?idToDel=<?= $item['id'] ?>" class="btn btn-danger ml-1">
                                                             Conferma
                                                         </a></span>
                                                 </div>

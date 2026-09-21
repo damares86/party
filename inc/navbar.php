@@ -32,7 +32,7 @@ if ($pagename == 'index') {
             if ($_SESSION['id'] <= 2) {
             ?>
                 <li class="nav-item"><a href="<?= $link_payment ?>" class="nav-link <?= $active_payment ?>">Pagamento</a></li>
-                <li class="nav-item"><a href="<?= $link_booking ?>" class="nav-link <?= $active_booking ?>">Prenota</a></li>
+                <!-- <li class="nav-item"><a href="<?= $link_booking ?>" class="nav-link <?= $active_booking ?>">Prenota</a></li> -->
             <?php
             }
             ?>
